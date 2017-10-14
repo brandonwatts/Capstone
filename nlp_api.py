@@ -11,44 +11,41 @@ credentials = GoogleCredentials.get_application_default()
 
 
 def parse_syntax(text):
+    '''
+    Method to parse the syntax from a sentence
+    :param text: Text of a sentence
+    :return: response from Google Natural Language API Syntax Parser
+    '''
+    client = language.LanguageServiceClient()           # Instantiate a new Language Client
 
-    client = language.LanguageServiceClient()
-
-    if isinstance(text, six.binary_type):
+    if isinstance(text, six.binary_type):               # Make sure the format is correct
         text = text.decode('utf-8')
 
-    document = types.Document(
+    document = types.Document(                          # Set the document type
         content=text,
         type=enums.Document.Type.PLAIN_TEXT)
 
-    tokens = client.analyze_syntax(document).tokens
+    tokens = client.analyze_syntax(document).tokens     # Response from Google Natural Language API
 
-    pos_tag = ('UNKNOWN', 'ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM',
-               'PRON', 'PRT', 'PUNCT', 'VERB', 'X', 'AFFIX')
-
-    sentence_syntax = []
-    for token in tokens:
-        sentence_syntax.append((pos_tag[token.part_of_speech.tag],token.text.content))
-
-    return sentence_syntax
+    return tokens
 
 
 def parse_entities(text):
+    '''
+    Method to parse the entities from a sentence
+    :param text: Text of a sentence
+    :return: response from Google Natural Language API Syntax Parser
+    '''
+    client = language.LanguageServiceClient()               # Instantiate a new Language Client
 
-    client = language.LanguageServiceClient()
-
-    if isinstance(text, six.binary_type):
+    if isinstance(text, six.binary_type):                   # Make sure the format is correct
         text = text.decode('utf-8')
 
     # Instantiates a plain text document.
-    document = types.Document(
+    document = types.Document(                              # Set the document type
         content=text,
         type=enums.Document.Type.PLAIN_TEXT)
 
-    entities = client.analyze_entities(document).entities
-
-    # entity types from enums.Entity.Type
-    entity_type = ('UNKNOWN', 'PERSON', 'LOCATION', 'ORGANIZATION',
-                   'EVENT', 'WORK_OF_ART', 'CONSUMER_GOOD', 'OTHER')
+    entities = client.analyze_entities(document).entities   # Response from Google Natural Language API
 
     return entities

@@ -11,6 +11,11 @@ credentials = GoogleCredentials.get_application_default()
 
 
 def parse_speech(wav_file):
+    '''
+    Method to parse the speech out of a wav file
+    :param wav_file: .wav file
+    :return: response from Google Speech API
+    '''
     client = speech.SpeechClient()                                  # Instantiate a new Speech Client
     file_name = os.path.join(os.path.dirname(__file__),wav_file)    # Grab the file path of the .wav file
 
