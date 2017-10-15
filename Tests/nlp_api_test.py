@@ -1,5 +1,6 @@
 import unittest
-from nlp_api import parse_entities,parse_syntax
+
+from api.natural_search.nlp_api import parse_entities, parse_syntax
 
 
 class NlpApiTestCase(unittest.TestCase):
