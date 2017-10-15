@@ -2,7 +2,7 @@ import unittest
 from speech_api import parse_speech
 
 
-class NlpApiTestCase(unittest.TestCase):
+class SpeechApiTestCase(unittest.TestCase):
     """Tests for `nlp_api.py`."""
 
     def test_parse_speech(self):
