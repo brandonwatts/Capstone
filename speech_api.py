@@ -6,7 +6,7 @@ from google.cloud.speech import types
 from oauth2client.client import GoogleCredentials
 
 '''Set the Credentials'''
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "CMSC323-edf53f65e546.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.path.dirname(__file__), "CMSC323-edf53f65e546.json")
 credentials = GoogleCredentials.get_application_default()
 
 
