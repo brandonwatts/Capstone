@@ -5,6 +5,13 @@ from google.cloud.language import enums
 from google.cloud.language import types
 from oauth2client.client import GoogleCredentials
 
+'''nlp_api.py contains all the operations carried out by Google Natural Language API'''
+
+__author__ = "Brandon Watts"
+__credits__ = ['Jonathan Cary', 'Austin Green']
+__license__ = 'MIT'
+__version__ = '0.1'
+
 '''Set the Credentials'''
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.path.dirname(__file__), "CMSC323-edf53f65e546.json")
 credentials = GoogleCredentials.get_application_default()
