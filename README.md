@@ -1,6 +1,7 @@
 # CoStar - Natural Language Search
 
-One Paragraph of project description goes here
+CoStar Group, the nation’s largest commercial real estate information, analytics, and
+marketing company, is in need of a speech recognition and natural language processing solution to be leveraged across a variety of their web and mobile products. They are requesting a REST-based API solution so that their existing products can easily take advantage of natural language processing without a need for a complete architecture.
 
 ## Getting Started
 
