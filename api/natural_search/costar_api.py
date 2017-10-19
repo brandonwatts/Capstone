@@ -1,7 +1,8 @@
-import simplejson as json
+from CostarAPIMockSchema import CostarApiMockSchema
+from CostarAPIMock import CostarAPIMock
 
-def costar_api_mock(json_query):
-    mock_json = json.loads('{ "Address" : "195 East Owlwood Road", "Country" : "United States of America", '
-                           '"State" : "Virginia", "City" : "Richmond" }')
 
-    return json.dumps(mock_json) + ' (What you actually sent: ' + json_query + ')'
+def costar_api_mock():
+    api_response = CostarAPIMock(address="123 St.", city="Richmond", state="Virginia", country="USA")
+    schema = CostarApiMockSchema()
+    return schema.dump(api_response).data
