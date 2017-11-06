@@ -1,4 +1,7 @@
+import csv
 import os
+import re
+import string
 import six
 from google.cloud import language
 from google.cloud.language import enums
@@ -16,6 +19,15 @@ __version__ = '0.1'
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(os.path.dirname(__file__), "CMSC323-edf53f65e546.json")
 credentials = GoogleCredentials.get_application_default()
 
+def load_csv(filename):
+    with open(filename, newline='') as file:
+        return [row for row in csv.reader(file)]
+
+cities = load_csv("Top5000Population.csv")
+states = load_csv("States.csv")
+
+zipcode = re.compile(r"\d\d\d\d\d")
+punctuation = re.compile(r"[^\w\s]")
 
 def parse_syntax(text):
     '''
@@ -56,3 +68,23 @@ def parse_entities(text):
     entities = client.analyze_entities(document).entities   # Response from Google Natural Language API
 
     return entities
+
+# still needs to check for negation
+def find_city(entities):
+    for i in entities:
+        if i.type == enums.Entity.Type.LOCATION:
+            if i.name.upper() in (j[0].upper() for j in cities):
+                return i
+
+# bad matches like street numbers still need to be considered
+def find_zipcode(text):
+    for i in punctuation.sub('', text).split(' '):
+        if zipcode.match(i):
+            return i
+
+# still needs to check for negation
+def find_state(entities):
+    for i in entities:
+        if i.type == enums.Entity.Type.LOCATION:
+            if i.name.upper() in (j[0].upper() for j in states):
+                return i
