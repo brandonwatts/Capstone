@@ -6,6 +6,7 @@ __license__ = 'MIT'
 __version__ = '0.1'
 
 class ApiResponse(object):
-    def __init__(self, tokens, POSTags):
-        self.tokens = tokens
-        self.POSTags = POSTags
+    def __init__(self, states, city, zip):
+        self.states = states
+        self.city = city
+        self.zip = zip

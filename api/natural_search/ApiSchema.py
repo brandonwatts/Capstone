@@ -8,5 +8,6 @@ __license__ = 'MIT'
 __version__ = '0.1'
 
 class ApiSchema(Schema):
-    tokens = fields.List(fields.Str())
-    POSTags = fields.List(fields.List(fields.Str()))
+    states = fields.List(fields.Str())
+    city = fields.List(fields.Str())
+    zip = fields.List(fields.Str())
