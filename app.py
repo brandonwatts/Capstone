@@ -6,10 +6,16 @@ from flask import Flask, Blueprint
 import settings
 from api.natural_search.endpoints.nlp import ns as nlp
 from api.restplus import api
+from flask import render_template
+
 
 app = Flask(__name__)
 logging.config.fileConfig('logging.conf')
 log = logging.getLogger(__name__)
+
+@app.route('/')
+def view():
+  return render_template('index.html')
 
 
 def configure_app(flask_app):
