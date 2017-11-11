@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 module.exports = {
   entry: [
-    "./api/natural_search/js/app.js"
+    "./js/app.js"
   ],
   output: {
     path: __dirname + '/static',
