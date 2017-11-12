@@ -1,5 +1,5 @@
-from CostarAPIMockSchema import CostarApiMockSchema
-from CostarAPIMock import CostarAPIMock
+from api.natural_search.CostarAPIMock import CostarAPIMock
+from api.natural_search.Models.Schemas.CostarAPIMockSchema import CostarApiMockSchema
 
 
 def costar_api_mock():

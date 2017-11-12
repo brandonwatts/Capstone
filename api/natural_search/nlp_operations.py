@@ -1,9 +1,10 @@
-from nltk import word_tokenize
-from nltk.tag import StanfordNERTagger
 import re
 
-from ApiResponse import ApiResponse
-from ApiSchema import ApiSchema
+from nltk import word_tokenize
+from nltk.tag import StanfordNERTagger
+
+from api.natural_search.Models.ApiResponse import ApiResponse
+from api.natural_search.Models.Schemas.ApiSchema import ApiSchema
 
 '''nlp_operations.py contains all the operations that are used to transform a request to an CoStar API request '''
 
