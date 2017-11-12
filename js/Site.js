@@ -1,9 +1,27 @@
-import React from 'react';
+import React, {Component} from "react";
 import Listings from './Listings.js';
-import SearchBar from './SearchBar.js'
+import SearchBar from './SearchBar.js';
+import axios from 'axios';
 
-var Site = React.createClass({
-    render: function () {
+export default class Site extends Component {
+
+    constructor(props) {
+    super(props);
+    this.loadResults = this.loadResults.bind(this);
+  }
+
+    loadResults(request){
+        console.log(request);
+        axios.get(`/api/nlp?request=${request}`)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    render() {
         return (
             <div>
                 <section className="hero-area bg-1 text-center overly">
@@ -15,7 +33,7 @@ var Site = React.createClass({
                                     <p>Join the millions who buy and sell from each other <br/> everyday in local
                                         communities around the world</p>
                                 </div>
-                                <SearchBar/>
+                                <SearchBar loadResults={this.loadResults}/>
                             </div>
                         </div>
                     </div>
@@ -24,6 +42,4 @@ var Site = React.createClass({
             </div>
         );
     }
-});
-
-export default Site;
+}
