@@ -348,7 +348,7 @@ button {
 }
 
 .bg-1 {
-    background: url("https://wallpaperscraft.com/image/city_buildings_sky_water_805_3840x2160.jpg");
+    background: url("https://wallpaperscraft.com/image/city_buildings_sky_water_805_3840x2160.jpg") center center fixed;
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -365,6 +365,13 @@ button {
     margin-top: 30px;
 }
 
-i{
+li > i{
     margin-right: 4px;
+}
+
+.voice-button {
+    background: none;
+    color: #5672f9;
+    border-width: 1px 1px 1px 0px;
+    border-color: #dedede;
 }

@@ -13,9 +13,10 @@ app = Flask(__name__)
 logging.config.fileConfig('logging.conf')
 log = logging.getLogger(__name__)
 
+
 @app.route('/')
 def view():
-  return render_template('index.html')
+    return render_template('index.html')
 
 
 def configure_app(flask_app):

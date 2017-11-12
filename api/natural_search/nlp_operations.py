@@ -17,7 +17,7 @@ st = StanfordNERTagger(
     '/Users/brandonwatts/Desktop/Capstone/stanford-ner-2017-06-09/stanford-ner.jar',
     encoding='utf-8')
 
-states = [
+us_states = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
     'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
     'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
@@ -35,14 +35,14 @@ states = [
 def response(request):
     states = extract_states(request)
     city = extract_city(request)
-    zip = extract_zip(request)
-    api_response = ApiResponse(states=states, city=city, zip=zip)
+    zip_code = extract_zip(request)
+    api_response = ApiResponse(states=states, city=city, zip_code=zip_code)
     schema = ApiSchema()
     return schema.dump(api_response)
 
 
 def city_or_state(location):
-    if location in states:
+    if location in us_states:
         return "State"
     else:
         return "City"

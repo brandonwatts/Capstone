@@ -7,7 +7,8 @@ __credits__ = ['Jonathan Cary', 'Austin Green']
 __license__ = 'MIT'
 __version__ = '0.1'
 
+
 class ApiSchema(Schema):
     states = fields.List(fields.Str())
     city = fields.List(fields.Str())
-    zip = fields.List(fields.Str())
+    zip_code = fields.List(fields.Str())

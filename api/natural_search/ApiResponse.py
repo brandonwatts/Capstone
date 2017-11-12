@@ -5,8 +5,9 @@ __credits__ = ['Jonathan Cary', 'Austin Green']
 __license__ = 'MIT'
 __version__ = '0.1'
 
+
 class ApiResponse(object):
-    def __init__(self, states, city, zip):
+    def __init__(self, states, city, zip_code):
         self.states = states
         self.city = city
-        self.zip = zip
+        self.zip_code = zip_code
