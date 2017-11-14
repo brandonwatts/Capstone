@@ -6,8 +6,6 @@ from flask import Flask, Blueprint
 import settings
 from api.natural_search.endpoints.nlp import ns as nlp
 from api.restplus import api
-from flask import render_template
-
 
 app = Flask(__name__)
 logging.config.fileConfig('logging.conf')
@@ -34,6 +32,7 @@ def main():
     initialize_app(app)
     log.info('>>>>> Starting development server at http://{}/api/ <<<<<'.format(app.config['SERVER_NAME']))
     app.run(debug=settings.FLASK_DEBUG)
+
 
 if __name__ == "__main__":
     main()
