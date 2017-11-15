@@ -7,7 +7,8 @@ __version__ = '0.1'
 
 
 class ApiResponse(object):
-    def __init__(self, states, city, zip_code):
+    def __init__(self, states, city, zip_code, sq_ft):
         self.states = states
         self.city = city
         self.zip_code = zip_code
+        self.sq_ft = sq_ft

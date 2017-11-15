@@ -12,3 +12,4 @@ class ApiSchema(Schema):
     states = fields.List(fields.Str())
     city = fields.List(fields.Str())
     zip_code = fields.List(fields.Str())
+    sq_ft = fields.List(fields.Str())
