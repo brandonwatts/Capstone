@@ -31,11 +31,11 @@ def response(request):
 
 
 def extract_states(ents):
-    return list(filter(lambda x: x in us_states, map(lambda x: str(x), ents)))
+    return list(filter(lambda ent: ent.label_ == "GPE" and ent.text in us_states, ents))
 
 
 def extract_city(ents):
-    return list(filter(lambda x: x not in us_states, map(lambda x: str(x), ents)))
+    return list(filter(lambda ent: ent.label_ == "GPE" and ent.text not in us_states, ents))
 
 
 def extract_zip(text):
