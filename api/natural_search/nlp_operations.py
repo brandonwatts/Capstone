@@ -26,7 +26,8 @@ def response(request):
     city = extract_city(doc.ents)
     zip_code = extract_zip(request)
     sq_ft = extract_square_footage(doc.ents)
-    api_response = ApiResponse(states=states, city=city, zip_code=zip_code, sq_ft = sq_ft)
+    price = extract_price(doc.ents)
+    api_response = ApiResponse(states=states, city=city, zip_code=zip_code, sq_ft=sq_ft, price=price)
     schema = ApiSchema()
     return schema.dump(api_response)
 
@@ -37,6 +38,11 @@ def extract_states(ents):
 
 def extract_city(ents):
     return list(filter(lambda ent: ent.label_ == "GPE" and ent.text not in us_states, ents))
+
+
+# Naive and will fix  - just for demo purposes
+def extract_price(ents):
+    return list(filter(lambda ent: ent.label_ == "MONEY", ents))
 
 
 # Naive and will fix  - just for demo purposes
