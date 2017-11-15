@@ -1,9 +1,10 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='Capstone',
     version='1.0',
-    packages=['flask-restplus','marshmallow','nltk'],
+    packages=['api'],
+    install_requires=['flask-restplus','marshmallow','nltk','spacy'],
     url='',
     license='MIT',
     author='',
