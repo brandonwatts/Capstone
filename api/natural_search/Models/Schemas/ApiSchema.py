@@ -14,3 +14,5 @@ class ApiSchema(Schema):
     zip_code = fields.List(fields.Str())
     sq_ft = fields.List(fields.Str())
     price = fields.List(fields.Str())
+    address = fields.List(fields.Str())
+
