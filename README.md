@@ -9,48 +9,28 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+[Python 3.6.3](https://www.python.org/downloads/)
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
+Start by running the setup.py file
 
 ```
-Give the example
+python setup.py
 ```
 
-And repeat
+From here all you will need is the engish model for spaCy
 
 ```
-until finished
+python -m spacy download en
 ```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+To test that spaCy is up and running run the following command:
 
 ```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
+python -m spacy validate
 ```
 
 ## Deployment
@@ -75,6 +55,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* Joshua Stickles
