@@ -25,7 +25,7 @@ def response(request):
     doc = nlp(request)
     states = extract_states(doc)
     city = extract_city(doc)
-    zip_code = extract_zip(request)
+    zip_code = extract_zip(doc)
     sq_ft = extract_square_footage(doc)
     price = extract_price(doc)
     address = extract_address(doc)
@@ -48,6 +48,10 @@ dependency tree to find the noun they are referring to.
 ***** Will eventually check that it is referring to some type of housing ****
 """
 def extract_price(doc):
+
+    for span in [*list(doc.ents), *list(doc.noun_chunks)]:
+        span.merge()
+
     relations = []
     for money in filter(lambda token: token.ent_type_ == 'MONEY', doc):
         if money.dep_ in ('attr', 'dobj'):
@@ -64,9 +68,11 @@ def extract_square_footage(doc):
     return list(filter(lambda token: token.ent_type_ == "QUANTITY", doc))
 
 
-def extract_zip(text):
-    zip_regex = re.compile('\\b\d{5}\\b')
-    return zip_regex.findall(text)
+def extract_zip(doc):
+    for number in filter(lambda token: token.ent_type_ == "CARDINAL" or token.ent_type_ == "DATE", doc):
+        if re.match('\d{5}', number.text):
+            return number.text
+    return ""
 
 
 def extract_address(doc):
