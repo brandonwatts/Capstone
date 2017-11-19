@@ -2,10 +2,11 @@ import re
 import spacy
 from api.natural_search.Models.ApiResponse import ApiResponse
 from api.natural_search.Models.Schemas.ApiSchema import ApiSchema
+from spacy.strings import StringStore
 
 nlp = spacy.load("en")
 
-us_states = [
+us_states = StringStore([
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
     'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
     'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
@@ -17,7 +18,7 @@ us_states = [
     'South  Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah',
     'Vermont', 'Virginia', 'Washington', 'West Virginia',
     'Wisconsin', 'Wyoming'
-]
+])
 
 
 def response(request):
