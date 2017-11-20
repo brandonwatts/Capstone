@@ -7,10 +7,15 @@ __version__ = '0.1'
 
 
 class ApiResponse(object):
-    def __init__(self, states, city, zip_code, sq_ft, price, address):
-        self.states = states
+    def __init__(self, state, city, zip_code, min_sqft, max_sqft, min_price, max_price, min_bed, max_bed, pricing_type, address):
+        self.state = state
         self.city = city
         self.zip_code = zip_code
-        self.sq_ft = sq_ft
-        self.price = price
+        self.min_sqft = min_sqft
+        self.max_sqft = max_sqft
+        self.min_price = min_price
+        self.max_price = max_price
+        self.min_bed = min_bed,
+        self.max_bed = max_bed,
+        self.pricing_type = pricing_type
         self.address = address

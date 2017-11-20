@@ -11,8 +11,13 @@ __version__ = '0.1'
 class ApiSchema(Schema):
     states = fields.List(fields.Str())
     city = fields.List(fields.Str())
-    zip_code = fields.Str()
-    sq_ft = fields.List(fields.Str())
-    price = fields.List(fields.Str())
+    zip_code = fields.List(fields.Str())
+    min_sqft = fields.List(fields.Str())
+    max_sqft = fields.List(fields.Str())
+    min_price = fields.List(fields.Str())
+    max_price = fields.List(fields.Str())
+    min_bed = fields.List(fields.Str())
+    max_bed = fields.List(fields.Str())
+    pricing_type = fields.List(fields.Str())
     address = fields.List(fields.Str())
 

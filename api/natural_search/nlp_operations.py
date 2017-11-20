@@ -1,79 +1,134 @@
 import re
 import spacy
-from api.natural_search.Models.ApiResponse import ApiResponse
-from api.natural_search.Models.Schemas.ApiSchema import ApiSchema
+from Models.ApiResponse import ApiResponse
+from Models.Schemas.ApiSchema import ApiSchema
 from spacy.strings import StringStore
 
 nlp = spacy.load("en")
 
 us_states = StringStore([
-    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
-    'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
-    'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-    'Maine' 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-    'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada',
-    'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
-    'North Carolina', 'North Dakota', 'Ohio',
-    'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-    'South  Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah',
-    'Vermont', 'Virginia', 'Washington', 'West Virginia',
-    'Wisconsin', 'Wyoming'
-])
+    'ALABAMA', 'ALASKA', 'ARIZONA', 'ARKANSAS', 'CALIFORNIA',
+    'COLORADO', 'CONNETICUT', 'DELAWARE', 'FLORIDA', 'GEORGIA',
+    'HAWAII', 'IDAHO', 'ILLINOIS', 'INDIANA', 'IOWA',
+    'KANSAS', 'KENTUCKY', 'LOISIANA', 'MAINE', 'MARYLAND',
+    'MASSACHUSETTS', 'MICHIGAN', 'MINNESOTA', 'MISSISSIPPI', 'MISSOURI',
+    'MONTANA', 'NEBRASKA', 'NEVADA', 'NEW HAMPSHIRE', 'NEW JERSEY',
+    'NEW MEXICO', 'NEW YORK', 'NORTH CAROLINA', 'NORTH DAKOTA', 'OHIO',
+    'OKLAHOMA', 'OREGON', 'PENNSYLVANIA', 'RHODE ISLAND', 'SOUTH  CAROLINA',
+    'SOUTH DAKOTA', 'TENNESSEE', 'TEXAS', 'UTAH', 'VERMONT',
+    'VIRGINIA', 'WASHINGTON', 'WEST VIRGINIA', 'WISCONSIN', 'WYOMING'])
 
+"""
+us_state_abbreviations = StringStore([
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'])
+"""
 
 def response(request):
     doc = nlp(request)
-    states = extract_states(doc)
-    city = extract_city(doc)
-    zip_code = extract_zip(doc)
-    sq_ft = extract_square_footage(doc)
-    price = extract_price(doc)
-    address = extract_address(doc)
-    api_response = ApiResponse(states=states, city=city, zip_code=zip_code, sq_ft=sq_ft, price=price, address=address)
+    
+    api_response = ApiResponse(
+        state =        extract_state(doc),
+        city =         extract_city(doc),
+        zip_code =     extract_zip_code(doc),
+        min_sqft =     extract_min_sqft(doc),
+        max_sqft =     extract_max_sqft(doc),
+        min_price =    extract_min_price(doc),
+        max_price =    extract_max_price(doc),
+        min_bed =      extract_min_bed(doc),
+        max_bed =      extract_max_bed(doc),
+        pricing_type = extract_pricing_type(doc),
+        address =      extract_address(doc))
+    
     schema = ApiSchema()
     return schema.dump(api_response)
 
+def find_head(token, function):
+    while token != token.head:
+        if function(token):
+            return token
+        token = token.head
 
-def extract_states(doc):
-    return list(filter(lambda token: token.ent_type_ == "GPE" and token.text in us_states, doc))
+def is_noun(token):
+    noun_tags = ('NN', 'NNS', 'NNP', 'NNPS')
+    return token.tag_ in noun_tags
 
+def is_min_quantity(token):
+    min_tags = ("MORE", "GREATER", "OVER")
+    return any(child.text.upper() in min_tags for child in token.children)
+
+def is_max_quantity(token):
+    max_tags = ("LESS", "UNDER")
+    return any(child.text.upper() in max_tags for child in token.children)
+
+def is_state_text(token):
+    return token.lemma_.upper() in us_states
+
+def extract_state(doc):
+    return [token.text for token in doc
+            if token.ent_type_ == "GPE" and is_state_text(token)]
 
 def extract_city(doc):
-    return list(filter(lambda token: token.ent_type_ == "GPE" and token.text not in us_states, doc))
+    return [token.text for token in doc
+            if token.ent_type_ == "GPE" and not is_state_text(token)]
 
+def extract_zip_code(doc):
+    return [token.text for token in doc if
+            re.match('\d{5}', token.text) and list(token.children) == []]
 
-"""
-Extracts money and currency values (entities labelled as MONEY) and checks the
-dependency tree to find the noun they are referring to. 
-***** Will eventually check that it is referring to some type of housing ****
-"""
-def extract_price(doc):
+def is_price(token):
+    return token.ent_type_ == "MONEY" and token.pos_ == "NUM"
 
-    for span in [*list(doc.ents), *list(doc.noun_chunks)]:
-        span.merge()
+def extract_min_price(doc):
+    return [token.text
+            for token in doc if is_price(token) and not is_max_quantity(token)]
 
-    relations = []
-    for money in filter(lambda token: token.ent_type_ == 'MONEY', doc):
-        if money.dep_ in ('attr', 'dobj'):
-            subject = [token for token in money.head.lefts if token.dep_ == 'nsubj']
-            if subject:
-                subject = subject[0]
-                relations.append((subject, money))
-        elif money.dep_ == 'pobj' and money.head.dep_ == 'prep':
-            relations.append((money.head.head, money))
-    return relations
+def extract_max_price(doc):
+    return [token.text
+            for token in doc if is_price(token) and is_max_quantity(token)]
 
+def find_pricing_type(token):
+    for child in token.children:
+        if child.text.upper() == "PER":
+            for pricing in child.children:
+                return pricing
 
-def extract_square_footage(doc):
-    return list(filter(lambda token: token.ent_type_ == "QUANTITY", doc))
+def extract_pricing_type(doc):
+    types = []
+    for token in doc:
+        if is_price(token):
+            result = find_pricing_type(token)
+            if result:
+                types.append(result.text)
+    return types
 
+def is_sqft(token):
+    tags = ('FEET', 'FOOT', 'SQUAREFEET', 'SQUAREFOOT',
+            'SQUARE', 'SQFT', 'SQ', 'FT')
+    return token.pos_ == "NUM" and token.head.lemma_.upper() in tags
 
-def extract_zip(doc):
-    for number in filter(lambda token: token.ent_type_ == "CARDINAL" or token.ent_type_ == "DATE", doc):
-        if re.match('\d{5}', number.text):
-            return number.text
-    return ""
+def extract_min_sqft(doc):
+    return [token.text for token in doc
+            if is_sqft(token) and not is_max_quantity(token)]
 
+def extract_max_sqft(doc):
+    return [token.text for token in doc
+            if is_sqft(token) and is_max_quantity(token)]
+
+def is_bed(token):
+    tags = ('BED', 'ROOM', 'BEDROOM', 'PEOPLE')
+    return token.pos_ == "NUM" and token.head.lemma_.upper() in tags
+
+def extract_min_bed(doc):
+    return [token.text for token in doc
+            if is_bed(token) and not is_max_quantity(token)]
+
+def extract_max_bed(doc):
+    return [token.text for token in doc
+            if is_bed(token) and is_max_quantity(token)]
 
 def extract_address(doc):
-    return list(filter(lambda token: token.ent_type_ == "FAC", doc))
+    return [token.text for token in doc if token.ent_type_ == "FAC"]
