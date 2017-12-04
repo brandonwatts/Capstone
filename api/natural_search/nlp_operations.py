@@ -41,7 +41,8 @@ def response(request):
         min_bed =      extract_min_bed(doc),
         max_bed =      extract_max_bed(doc),
         pricing_type = extract_pricing_type(doc),
-        address =      extract_address(doc))
+        address =      extract_address(doc),
+        build_year=    extract_build_year(doc))
     
     schema = ApiSchema()
     return schema.dump(api_response)
@@ -132,3 +133,6 @@ def extract_max_bed(doc):
 
 def extract_address(doc):
     return [token.text for token in doc if token.ent_type_ == "FAC"]
+
+def extract_build_year(doc):
+    return [token.text for token in doc if token.ent_type_ == "DATE"]
