@@ -9,7 +9,7 @@ __version__ = '0.1'
 
 
 class ApiSchema(Schema):
-    states = fields.List(fields.Str())
+    state = fields.List(fields.Str())
     city = fields.List(fields.Str())
     zip_code = fields.List(fields.Str())
     min_sqft = fields.List(fields.Str())
