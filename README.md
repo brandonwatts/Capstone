@@ -16,7 +16,7 @@ These instructions will get you a copy of the project up and running on your loc
 Start by running the setup.py file
 
 ```
-python setup.py
+python setup.py install
 ```
 
 From here all you will need is the engish model for spaCy
