@@ -20,4 +20,5 @@ class ApiSchema(Schema):
     max_bed = fields.List(fields.Str())
     pricing_type = fields.List(fields.Str())
     address = fields.List(fields.Str())
+    build_date = fields.List(fields.Str())
 
