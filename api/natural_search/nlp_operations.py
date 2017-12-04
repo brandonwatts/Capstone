@@ -68,7 +68,7 @@ def is_state_text(token):
     return token.lemma_.upper() in us_states
 
 def extract_state(doc):
-    return [token.text for token in doc
+    return [token.lemma_ for token in doc
             if token.ent_type_ == "GPE" and is_state_text(token)]
 
 def extract_city(doc):
