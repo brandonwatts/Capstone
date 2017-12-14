@@ -31,30 +31,15 @@ pu_business_for_sale,
 pu_user_properties,
 pu_investment_properties,
 
-# Condos
 condo_inclusion,  # Include, Only, and Exclude
-# Portfolios
 portfolio_inclusion,  # Include, Only, and Exclude
-# Country
-country,
-# Market
-markets,
-# SubMarket
-submarkets,
-# County
-county,
+country
+markets
+submarkets
+county
 
 # Search within x miles
 search_radius
-
-# Lot Size Range
-lot_size_minimum,
-lot_size_maximum,
-lot_size_metric,  # Acres, Square Foot, Hectares, Square Meters
-
-# Units/Rooms/Beds Range
-bed_range_minimum,
-bed_range_maximum,
 
 # Cap Rate Range (%)
 cap_rate_minimum,
@@ -69,29 +54,13 @@ keywords,
 date_entered,  # All Dates, Last 24 Hours, Last 3 Days, Last Week, 2 Weeks, Month, 3 Months, Year
 property_status,
 tenancy_single,  # Single or Multiple
-air_conditioning,
 in_unit_washer_and_dryer,
 washer_and_dryer_hookups,
-dishwasher,
-wheelchair_access,
-parking,
-laundry_facilities,
-fitness_center,
-pool,
-elevator,
-dog_friendly,
-cat_friendly,
-furnished,
 # Style
 apartments,
 houses,
 condos,
 townhomes,
-# Rating
-five_star,
-four_star,
-three_star,
-two_star,
 # Specialties
 senior_housing,
 military_housing,

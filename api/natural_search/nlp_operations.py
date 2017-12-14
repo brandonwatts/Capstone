@@ -43,7 +43,18 @@ def response(request):
         pricing_type = extract_pricing_type(doc),
         address =      extract_address(doc),
         build_year=    extract_build_year(doc),
-        dog_friendly = extract_dog_friendly(doc))
+        dog_friendly = extract_dog_friendly(doc),
+        cat_friendly = extract_cat_friendly(doc),
+        has_pool =     extract_has_pool(doc),
+        has_elevator = extract_has_elevator(doc),
+        has_fitness_center = extract_has_fitness_center(doc),
+        has_wheelchair_access = extract_has_wheelchair_access(doc),
+        has_dishwasher = extract_has_dishwasher(doc),
+        has_air_conditioning = extract_has_air_conditioning(doc),
+        has_parking = extract_has_parking(doc),
+        star_rating = extract_star_rating(doc),
+        is_furnished = extract_is_furnished(doc),
+        has_laundry_facilities = extract_has_laundry_facilities(doc))
     
     schema = ApiSchema()
     return schema.dump(api_response)
@@ -140,3 +151,36 @@ def extract_build_year(doc):
 
 def extract_dog_friendly(doc):
     return doc.similarity(nlp(u'dog friendly')) > .50
+
+def extract_cat_friendly(doc):
+    return doc.similarity(nlp(u'cat friendly')) > .50
+
+def extract_has_pool(doc):
+    return False
+
+def extract_has_elevator(doc):
+    return False
+
+def extract_has_fitness_center(doc):
+    return False
+
+def extract_has_wheelchair_access(doc):
+    return False
+
+def extract_has_dishwasher(doc):
+    return False
+
+def extract_has_air_conditioning(doc):
+    return False
+
+def extract_star_rating(doc):
+    return -1
+
+def extract_has_parking(doc):
+    return False
+
+def extract_is_furnished(doc):
+    return False
+
+def extract_has_laundry_facilities(doc):
+    return False
