@@ -29,7 +29,7 @@ us_state_abbreviations = StringStore([
 
 def response(request):
     doc = nlp(request)
-    
+
     api_response = ApiResponse(
         state =        extract_state(doc),
         city =         extract_city(doc),
@@ -42,7 +42,8 @@ def response(request):
         max_bed =      extract_max_bed(doc),
         pricing_type = extract_pricing_type(doc),
         address =      extract_address(doc),
-        build_year=    extract_build_year(doc))
+        build_year=    extract_build_year(doc),
+        dog_friendly = extract_dog_friendly(doc))
     
     schema = ApiSchema()
     return schema.dump(api_response)
@@ -136,3 +137,6 @@ def extract_address(doc):
 
 def extract_build_year(doc):
     return [token.text for token in doc if token.ent_type_ == "DATE"]
+
+def extract_dog_friendly(doc):
+    return doc.similarity(nlp(u'dog friendly')) > .50

@@ -21,4 +21,5 @@ class ApiSchema(Schema):
     pricing_type = fields.List(fields.Str())
     address = fields.List(fields.Str())
     build_year = fields.List(fields.Str())
+    dog_friendly = fields.Bool()
 
