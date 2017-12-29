@@ -1,9 +1,3 @@
-__author__ = "Brandon Watts"
-__credits__ = ['Jonathan Cary', 'Austin Green']
-__license__ = 'MIT'
-__version__ = '0.1'
-
-
 class CostarAPIMock(object):
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -12,19 +6,6 @@ class CostarAPIMock(object):
 
 '''
 ***** Unmapped Fields *****
-
-PROPERTY TYPE:
-pt_industrial
-pt_retail
-pt_shopping_center
-pt_multifamily
-pt_specialty
-pt_office
-pt_health_care
-pt_hospitality
-pt_sports_and_entertainment
-pt_land
-pt_residential_income
 
 PROPERTY USE:
 pu_business_for_sale,
@@ -38,16 +19,10 @@ markets
 submarkets
 county
 
-# Search within x miles
-search_radius
-
 # Cap Rate Range (%)
 cap_rate_minimum,
 cap_rate_maximum,
 
-# Year Built
-year_built_minimum,
-year_built_maximum,
 
 listing_id,
 keywords,
