@@ -4,7 +4,7 @@ import logging.config
 from flask import Flask, Blueprint
 
 import settings
-from api.natural_search.endpoints.nlp import ns as nlp
+from api.Endpoints.nlp import ns as nlp
 from api.restplus import api
 
 app = Flask(__name__)
