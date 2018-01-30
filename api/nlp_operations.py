@@ -57,7 +57,7 @@ def response(request):
         has_laundry_facilities = extract_has_laundry_facilities(doc),
         property_type = extract_property_type(doc),
         search_radius = extract_search_radius(doc))
-    
+
     schema = ApiSchema()
     return schema.dump(api_response)
 
@@ -189,7 +189,8 @@ def extract_has_laundry_facilities(doc):
     return False
 
 def extract_property_type(doc):
-    return "pt_industrial, pt_retail, pt_shopping_center, pt_multifamily, pt_specialty, pt_office, pt_health_care, pt_hospitality, pt_sports_and_entertainment, pt_land, pt_residential_income"
+    return "pt_industrial, pt_retail, pt_shopping_center, pt_multifamily, pt_specialty, pt_office, pt_health_care," \
+           "pt_hospitality, pt_sports_and_entertainment, pt_land, pt_residential_income"
 
 def extract_search_radius(doc):
     return "5 miles"

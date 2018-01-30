@@ -3,7 +3,6 @@ import logging.config
 
 from flask import Flask, Blueprint
 
-import settings
 from api.Endpoints.nlp import ns as nlp
 from api.restplus import api
 
@@ -13,11 +12,11 @@ log = logging.getLogger(__name__)
 
 
 def configure_app(flask_app):
-    flask_app.config['SERVER_NAME'] = settings.FLASK_SERVER_NAME
-    flask_app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.RESTPLUS_SWAGGER_UI_DOC_EXPANSION
-    flask_app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
-    flask_app.config['RESTPLUS_MASK_SWAGGER'] = settings.RESTPLUS_MASK_SWAGGER
-    flask_app.config['ERROR_404_HELP'] = settings.RESTPLUS_ERROR_404_HELP
+    flask_app.config['SERVER_NAME'] = 'localhost:8888'
+    flask_app.config['SWAGGER_UI_DOC_EXPANSION'] = 'list'
+    flask_app.config['RESTPLUS_VALIDATE'] = True
+    flask_app.config['RESTPLUS_MASK_SWAGGER'] = False
+    flask_app.config['ERROR_404_HELP'] = False
 
 
 def initialize_app(flask_app):
@@ -31,7 +30,7 @@ def initialize_app(flask_app):
 def main():
     initialize_app(app)
     log.info('>>>>> Starting development server at http://{}/api/ <<<<<'.format(app.config['SERVER_NAME']))
-    app.run(debug=settings.FLASK_DEBUG)
+    app.run(debug=True)
 
 
 if __name__ == "__main__":
