@@ -4,9 +4,9 @@ from Api.Models.ApiResponse import ApiResponse
 from Api.Models.Schemas.ApiSchema import ApiSchema
 from spacy.strings import StringStore
 
-nlp = spacy.load("en")
-us_states = StringStore().from_disk('StringStore/States')
-us_state_abbreviations = StringStore().from_disk('StringStore/StateAbbreviations')
+nlp = spacy.load('en_core_web_lg')
+us_states = StringStore().from_disk('Api/StringStore/States')
+us_state_abbreviations = StringStore().from_disk('Api/StringStore/StateAbbreviations')
 
 
 def response(request):
@@ -135,40 +135,40 @@ def extract_build_year(doc):
     return [token.text for token in doc if token.ent_type_ == "DATE"]
 
 def extract_dog_friendly(doc):
-    return doc.similarity(nlp(u'dog friendly')) > .50
+    return containsReferenceTo(doc=doc, reference="dog")
 
 def extract_cat_friendly(doc):
-    return doc.similarity(nlp(u'cat friendly')) > .50
+    return containsReferenceTo(doc=doc, reference="cat")
 
 def extract_has_pool(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="pool")
 
 def extract_has_elevator(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="elevator")
 
 def extract_has_fitness_center(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="fitness")
 
 def extract_has_wheelchair_access(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="wheelchair") or containsReferenceTo(doc=doc, reference='handicapped')
 
 def extract_has_dishwasher(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="dishwasher")
 
 def extract_has_air_conditioning(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="air conditioning")
 
 def extract_star_rating(doc):
     return -1
 
 def extract_has_parking(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="parking")
 
 def extract_is_furnished(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="furniture")
 
 def extract_has_laundry_facilities(doc):
-    return False
+    return containsReferenceTo(doc=doc, reference="laundry")
 
 def extract_property_type(doc):
     return "pt_industrial, pt_retail, pt_shopping_center, pt_multifamily, pt_specialty, pt_office, pt_health_care," \
@@ -176,3 +176,11 @@ def extract_property_type(doc):
 
 def extract_search_radius(doc):
     return "5 miles"
+
+def containsReferenceTo(doc, reference, MATCH_THRESHOLD=0.6):
+    containsReference = False
+    ref = nlp(reference)
+    for token in doc:
+        if token.similarity(ref) > MATCH_THRESHOLD:
+            containsReference = True
+    return containsReference
