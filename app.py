@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restplus import Resource, Api, reqparse
-from API.api import response
+from Api.api import response
 
 app = Flask(__name__)
 app.config['SWAGGER_UI_DOC_EXPANSION'] = 'list'

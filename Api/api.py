@@ -1,31 +1,13 @@
 import re
 import spacy
-from API.Models.ApiResponse import ApiResponse
-from API.Models.Schemas.ApiSchema import ApiSchema
+from Api.Models.ApiResponse import ApiResponse
+from Api.Models.Schemas.ApiSchema import ApiSchema
 from spacy.strings import StringStore
 
 nlp = spacy.load("en")
+us_states = StringStore().from_disk('StringStore/States')
+us_state_abbreviations = StringStore().from_disk('StringStore/StateAbbreviations')
 
-us_states = StringStore([
-    'ALABAMA', 'ALASKA', 'ARIZONA', 'ARKANSAS', 'CALIFORNIA',
-    'COLORADO', 'CONNETICUT', 'DELAWARE', 'FLORIDA', 'GEORGIA',
-    'HAWAII', 'IDAHO', 'ILLINOIS', 'INDIANA', 'IOWA',
-    'KANSAS', 'KENTUCKY', 'LOISIANA', 'MAINE', 'MARYLAND',
-    'MASSACHUSETTS', 'MICHIGAN', 'MINNESOTA', 'MISSISSIPPI', 'MISSOURI',
-    'MONTANA', 'NEBRASKA', 'NEVADA', 'NEW HAMPSHIRE', 'NEW JERSEY',
-    'NEW MEXICO', 'NEW YORK', 'NORTH CAROLINA', 'NORTH DAKOTA', 'OHIO',
-    'OKLAHOMA', 'OREGON', 'PENNSYLVANIA', 'RHODE ISLAND', 'SOUTH  CAROLINA',
-    'SOUTH DAKOTA', 'TENNESSEE', 'TEXAS', 'UTAH', 'VERMONT',
-    'VIRGINIA', 'WASHINGTON', 'WEST VIRGINIA', 'WISCONSIN', 'WYOMING'])
-
-"""
-us_state_abbreviations = StringStore([
-    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'])
-"""
 
 def response(request):
     doc = nlp(request)
