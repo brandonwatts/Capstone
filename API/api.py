@@ -1,7 +1,7 @@
 import re
 import spacy
-from api.Models.ApiResponse import ApiResponse
-from api.Models.Schemas.ApiSchema import ApiSchema
+from API.Models.ApiResponse import ApiResponse
+from API.Models.Schemas.ApiSchema import ApiSchema
 from spacy.strings import StringStore
 
 nlp = spacy.load("en")

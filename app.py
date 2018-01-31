@@ -1,37 +1,23 @@
-#!flask/bin/python
-import logging.config
-
-from flask import Flask, Blueprint
-
-from api.Endpoints.nlp import ns as nlp
-from api.restplus import api
+from flask import Flask
+from flask_restplus import Resource, Api, reqparse
+from API.api import response
 
 app = Flask(__name__)
-logging.config.fileConfig('logging.conf')
-log = logging.getLogger(__name__)
+app.config['SWAGGER_UI_DOC_EXPANSION'] = 'list'
+api = Api(app, version='1.0', title='CoStar NLP API', description='CoStar API powering NLP-Based Applications')
+parser = reqparse.RequestParser()
+parser.add_argument('request', type=str, required=True)
 
 
-def configure_app(flask_app):
-    flask_app.config['SERVER_NAME'] = 'localhost:8888'
-    flask_app.config['SWAGGER_UI_DOC_EXPANSION'] = 'list'
-    flask_app.config['RESTPLUS_VALIDATE'] = True
-    flask_app.config['RESTPLUS_MASK_SWAGGER'] = False
-    flask_app.config['ERROR_404_HELP'] = False
+@api.route('/nlp')
+class NlpEndpoints(Resource):
+
+    @api.expect(parser, validate=True)
+    def get(self):
+        args = parser.parse_args()
+        request = args['request']
+        return response(request)
 
 
-def initialize_app(flask_app):
-    configure_app(flask_app)                                    # Configure the app
-    blueprint = Blueprint('api', __name__, url_prefix='/api')   # Set up a blueprint routed to /api
-    api.init_app(blueprint)                                     # Initialize the app
-    api.add_namespace(nlp)                                      # Add our NLP namespace
-    flask_app.register_blueprint(blueprint)                     # Register our blueprint with flask
-
-
-def main():
-    initialize_app(app)
-    log.info('>>>>> Starting development server at http://{}/api/ <<<<<'.format(app.config['SERVER_NAME']))
+if __name__ == '__main__':
     app.run(debug=True)
-
-
-if __name__ == "__main__":
-    main()

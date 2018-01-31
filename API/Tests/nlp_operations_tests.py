@@ -1,5 +1,5 @@
 import unittest
-import api.nlp_operations as ops
+import api.api as ops
 
 
 class nlp_operations_test(unittest.TestCase):
