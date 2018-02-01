@@ -25,7 +25,7 @@ class ApiSchema(Schema):
     has_dishwasher = fields.Bool()
     has_air_conditioning = fields.Bool()
     has_parking = fields.Bool()
-    star_rating = fields.Int()
+    star_rating = fields.List(fields.Str())
     is_furnished = fields.Bool()
     has_laundry_facilities = fields.Bool()
     property_type = fields.Str()
