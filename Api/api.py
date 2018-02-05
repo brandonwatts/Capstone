@@ -1,74 +1,68 @@
 import re
 import spacy
-from Api.Models.ApiResponse import ApiResponse
 from Api.Models.Schemas.ApiSchema import ApiSchema
+from Api.Models.ApiResponseBuilder import ApiResponseBuilder
 from spacy.strings import StringStore
 from spacy.matcher import Matcher
 
-def on_match(matcher, doc, id, matches):
-    match_id, start, end = matches[id]
-    starRating = doc[start:end]
-    star_ratings.append(starRating.text)
 
+response_builder = ApiResponseBuilder()
 nlp = spacy.load('en_core_web_lg')
 us_states = StringStore().from_disk('Api/StringStore/States')
 us_state_abbreviations = StringStore().from_disk('Api/StringStore/StateAbbreviations')
-matcher = Matcher(nlp.vocab)
-pattern = [{'IS_DIGIT': True},{'LOWER': 'star'}]
-matcher.add('StarRating',on_match, pattern)
-api_response = ApiResponse()
-star_ratings = []
 
 
 def response(request):
-    global api_response, star_ratings
-
-    def addExtractionPoints():
-        api_response.state = extract_state(doc)
-        api_response.city = extract_city(doc)
-        api_response.zip_code = extract_zip_code(doc)
-        api_response.min_sqft = extract_min_sqft(doc)
-        api_response.max_sqft = extract_max_sqft(doc)
-        api_response.min_price = extract_min_price(doc)
-        api_response.max_price = extract_max_price(doc)
-        api_response.min_bed = extract_min_bed(doc)
-        api_response.max_bed = extract_max_bed(doc)
-        api_response.pricing_type = extract_pricing_type(doc)
-        api_response.address = extract_address(doc)
-        api_response.build_year = extract_build_year(doc)
-        api_response.dog_friendly = extract_dog_friendly(doc)
-        api_response.cat_friendly = extract_cat_friendly(doc)
-        api_response.has_pool = extract_has_pool(doc)
-        api_response.has_elevator = extract_has_elevator(doc),
-        api_response.has_fitness_center = extract_has_fitness_center(doc)
-        api_response.has_wheelchair_access = extract_has_wheelchair_access(doc)
-        api_response.has_dishwasher = extract_has_dishwasher(doc)
-        api_response.has_air_conditioning = extract_has_air_conditioning(doc)
-        api_response.has_parking = extract_has_parking(doc)
-        api_response.star_rating = star_ratings
-        api_response.is_furnished = extract_is_furnished(doc)
-        api_response.has_laundry_facilities = extract_has_laundry_facilities(doc)
-        api_response.property_type = extract_property_type(doc)
-        api_response.search_radius = extract_search_radius(doc)
-
-
+    matcher = Matcher(nlp.vocab)
+    star_rating_pattern = [{'IS_DIGIT': True}, {'LOWER': 'star'}]
+    matcher.add('StarRating', on_star_rating_match, star_rating_pattern)
     doc = nlp(request)
     matcher(doc)
-    addExtractionPoints()
     schema = ApiSchema()
+    define_extraction_points(doc)
+    return schema.dump(response_builder.build())
+
+def on_star_rating_match(matcher, doc, id, matches):
     star_ratings = []
-    return schema.dump(api_response)
+    for match in matches:
+        match_id, start, end = match
+        starRating = doc[start:end]
+        star_ratings.append(starRating.text)
+    response_builder.add_extraction_point("star_rating", star_ratings)
 
+def define_extraction_points(doc):
 
+    response_builder.add_extraction_point("state", extract_state(doc))
+    response_builder.add_extraction_point("city", extract_city(doc))
+    response_builder.add_extraction_point("zip_code", extract_zip_code(doc))
+    response_builder.add_extraction_point("min_sqft", extract_min_sqft(doc))
+    response_builder.add_extraction_point("max_sqft", extract_max_sqft(doc))
+    response_builder.add_extraction_point("min_price", extract_min_price(doc))
+    response_builder.add_extraction_point("max_price", extract_max_price(doc))
+    response_builder.add_extraction_point("min_bed", extract_min_bed(doc))
+    response_builder.add_extraction_point("max_bed", extract_max_bed(doc))
+    response_builder.add_extraction_point("pricing_type", extract_pricing_type(doc))
+    response_builder.add_extraction_point("address", extract_address(doc))
+    response_builder.add_extraction_point("build_year", extract_build_year(doc))
+    response_builder.add_extraction_point("dog_friendly", extract_dog_friendly(doc))
+    response_builder.add_extraction_point("cat_friendly", extract_cat_friendly(doc))
+    response_builder.add_extraction_point("has_pool", extract_has_pool(doc))
+    response_builder.add_extraction_point("has_elevator", extract_has_elevator(doc))
+    response_builder.add_extraction_point("has_fitness_center", extract_has_fitness_center(doc))
+    response_builder.add_extraction_point("has_wheelchair_access", extract_has_wheelchair_access(doc))
+    response_builder.add_extraction_point("has_dishwasher", extract_has_dishwasher(doc))
+    response_builder.add_extraction_point("has_air_conditioning", extract_has_air_conditioning(doc))
+    response_builder.add_extraction_point("has_parking", extract_has_parking(doc))
+    response_builder.add_extraction_point("is_furnished", extract_is_furnished(doc))
+    response_builder.add_extraction_point("has_laundry_facilities", extract_has_laundry_facilities(doc))
+    response_builder.add_extraction_point("property_type", extract_property_type(doc))
+    response_builder.add_extraction_point("search_radius", extract_search_radius(doc))
 
 def find_head(token, function):
     while token != token.head:
         if function(token):
             return token
         token = token.head
-
-def extract_star_rating(matcher):
-    return star_ratings
 
 def is_noun(token):
     noun_tags = ('NN', 'NNS', 'NNP', 'NNPS')
@@ -195,8 +189,6 @@ def extract_property_type(doc):
 
 def extract_search_radius(doc):
     return "5 miles"
-
-
 
 def containsReferenceTo(doc, reference, MATCH_THRESHOLD=0.6):
     containsReference = False
