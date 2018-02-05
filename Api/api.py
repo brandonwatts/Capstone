@@ -14,13 +14,20 @@ us_state_abbreviations = StringStore().from_disk('Api/StringStore/StateAbbreviat
 
 def response(request):
     matcher = Matcher(nlp.vocab)
-    star_rating_pattern = [{'IS_DIGIT': True}, {'LOWER': 'star'}]
+    star_rating_pattern = [{'IS_DIGIT': True}, {'LEMMA': 'star'}]
+    search_radius_pattern = [{'IS_DIGIT': True}, {'ENT_TYPE': 'QUANTITY'}]
     matcher.add('StarRating', on_star_rating_match, star_rating_pattern)
+    matcher.add('SearchRadius', on_search_radius_match, search_radius_pattern)
     doc = nlp(request)
     matcher(doc)
     schema = ApiSchema()
     define_extraction_points(doc)
     return schema.dump(response_builder.build())
+
+def on_search_radius_match(matcher, doc, id, matches):
+    match_id, start, end = matches[id]
+    searchRadius = doc[start:end]
+    response_builder.add_extraction_point("search_radius", searchRadius)
 
 def on_star_rating_match(matcher, doc, id, matches):
     star_ratings = []
@@ -56,7 +63,6 @@ def define_extraction_points(doc):
     response_builder.add_extraction_point("is_furnished", extract_is_furnished(doc))
     response_builder.add_extraction_point("has_laundry_facilities", extract_has_laundry_facilities(doc))
     response_builder.add_extraction_point("property_type", extract_property_type(doc))
-    response_builder.add_extraction_point("search_radius", extract_search_radius(doc))
 
 def find_head(token, function):
     while token != token.head:
@@ -173,7 +179,6 @@ def extract_has_dishwasher(doc):
 def extract_has_air_conditioning(doc):
     return containsReferenceTo(doc=doc, reference="air conditioning")
 
-
 def extract_has_parking(doc):
     return containsReferenceTo(doc=doc, reference="parking")
 
@@ -186,9 +191,6 @@ def extract_has_laundry_facilities(doc):
 def extract_property_type(doc):
     return "pt_industrial, pt_retail, pt_shopping_center, pt_multifamily, pt_specialty, pt_office, pt_health_care," \
            "pt_hospitality, pt_sports_and_entertainment, pt_land, pt_residential_income"
-
-def extract_search_radius(doc):
-    return "5 miles"
 
 def containsReferenceTo(doc, reference, MATCH_THRESHOLD=0.6):
     containsReference = False
