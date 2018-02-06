@@ -1,5 +1,3 @@
-from Api.Models.ApiResponse import ApiResponse
-
 class ApiResponseBuilder:
 
     def __init__(self):
@@ -13,3 +11,6 @@ class ApiResponseBuilder:
         self.data[name] = value
 
 
+class ApiResponse(object):
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
