@@ -4,13 +4,12 @@ from Api.Models.Schemas.ApiSchema import ApiSchema
 from Api.Models.ApiResponseBuilder import ApiResponseBuilder
 from spacy.strings import StringStore
 from spacy.matcher import Matcher
-
+from spacy.attrs import LEMMA, ENT_TYPE
 
 response_builder = ApiResponseBuilder()
 nlp = spacy.load('en_core_web_lg')
 us_states = StringStore().from_disk('Api/StringStore/States')
 us_state_abbreviations = StringStore().from_disk('Api/StringStore/StateAbbreviations')
-
 
 def response(request):
     matcher = Matcher(nlp.vocab)
@@ -79,23 +78,140 @@ def is_min_quantity(token):
     return any(child.text.upper() in min_tags for child in token.children)
 
 def is_max_quantity(token):
-    max_tags = ("LESS", "UNDER")
+    max_tags = ("LESS", "UNDER", "BELOW")
     return any(child.text.upper() in max_tags for child in token.children)
 
 def is_state_text(token):
     return token.lemma_.upper() in us_states
 
+multi_word_state = [("NEW", "HAMPSHIRE"), ("NEW", "JERSEY"), ("NEW", "MEXICO"), ("NEW", "YORK"), ("NORTH", "CAROLINA"),
+              ("NORTH", "DAKOTA"), ("RHODE", "ISLAND"), ("SOUTH", "CAROLINA"), ("SOUTH", "DAKOTA"),
+              ("WEST", "VIRGINIA")]
+
+def is_multi_word_state(front_token, rear_token):
+    return (front_token.lemma_.upper(), rear_token.lemma_.upper()) in  multi_word_state
+
 def extract_state(doc):
-    return [token.lemma_ for token in doc
-            if token.ent_type_ == "GPE" and is_state_text(token)]
+
+    states = []
+    index = 0
+
+    while index < len(doc):
+        # Prepare all flags.
+        one_more = index < len(doc) - 1
+        two_more = index < len(doc) - 2
+
+        token = doc[index]
+        second_token = doc[index + 1] if one_more else None
+        third_token = doc[index + 2] if two_more else None
+
+        token_valid = token.ent_type_ == "GPE"
+        second_token_valid = second_token.ent_type_ == "GPE" if one_more else None
+
+        third_is_city = third_token.lemma_.upper() == "CITY" if two_more else None
+
+        one_word_state = is_state_text(token)
+        two_word_state = is_multi_word_state(token, second_token) if one_more else None
+
+        # Check if one word state.
+        if token_valid and one_word_state:
+            states.append(token.lemma_.upper())
+            index += 1
+            continue
+
+        # Check if two word state and not a city.
+        if one_more:
+            if second_token_valid and two_word_state:
+                if two_more:
+                    if not third_is_city:
+                        states.append(token.lemma_.upper())
+                        states.append(second_token.lemma_.upper())
+                        index += 2
+                        continue
+                else:
+                    states.append(token.lemma_.upper())
+                    states.append(second_token.lemma_.upper())
+                    index += 2
+                    continue
+
+        index += 1
+
+    return states
+
+    # States that consist of more then 1 word fail with this code since we are looking at individual tokens and only
+    # the sum of all the strings of a multi word state will pass the is_state_text conditional
+    #return [token.lemma_ for token in doc
+    #      if token.ent_type_ == "GPE" and is_state_text(token)]
 
 def extract_city(doc):
-    return [token.text for token in doc
-            if token.ent_type_ == "GPE" and not is_state_text(token)]
+
+    cities = []
+    index = 0
+
+    while index < len(doc):
+        # Prepare all flags.
+        one_more = index < len(doc) - 1
+        two_more = index < len(doc) - 2
+
+        token = doc[index]
+        second_token = doc[index + 1] if one_more else None
+        third_token = doc[index + 2] if two_more else None
+
+        token_valid = token.ent_type_ == "GPE"
+        second_token_valid = second_token.ent_type_ == "GPE" if one_more else None
+
+        third_is_city = third_token.lemma_.upper() == "CITY" if two_more else None
+
+        one_word_state = is_state_text(token)
+        two_word_state = is_multi_word_state(token, second_token) if one_more else None
+
+        if token_valid:
+            if second_token_valid:
+                # Check if first two tokens look like a two word state.
+                if two_word_state:
+                    # As a special case, if the two word state has the word 'city' after it, we keep all 3 tokens.
+                    if third_is_city:
+                        cities.append(token.lemma_.upper())
+                        cities.append(second_token.lemma_.upper())
+                        cities.append(third_token.lemma_.upper())
+                        index += 3
+                        continue
+                    else:
+                        index += 2
+                        continue
+            # We always skip any one word states.
+            if one_word_state:
+                index += 1
+                continue
+            else:
+                cities.append(token.lemma_.upper())
+                index += 1
+                continue
+
+        index += 1
+
+    return cities
+
+    # this code picked up multi word states which it shouldn't
+    #return [token.text for token in doc
+     #       if token.ent_type_ == "GPE" and not is_state_text(token)]
 
 def extract_zip_code(doc):
     return [token.text for token in doc if
             re.match('\d{5}', token.text) and list(token.children) == []]
+
+def is_sqft(token):
+    tags = ('FEET', 'FOOT', 'SQUAREFEET', 'SQUAREFOOT',
+            'SQUARE', 'SQFT', 'SQ', 'FT')
+    return token.pos_ == "NUM" and token.head.lemma_.upper() in tags
+
+def extract_min_sqft(doc):
+    return [token.text for token in doc
+            if is_sqft(token) and not is_max_quantity(token)]
+
+def extract_max_sqft(doc):
+    return [token.text for token in doc
+            if is_sqft(token) and is_max_quantity(token)]
 
 def is_price(token):
     return token.ent_type_ == "MONEY" and token.pos_ == "NUM"
@@ -122,19 +238,6 @@ def extract_pricing_type(doc):
             if result:
                 types.append(result.text)
     return types
-
-def is_sqft(token):
-    tags = ('FEET', 'FOOT', 'SQUAREFEET', 'SQUAREFOOT',
-            'SQUARE', 'SQFT', 'SQ', 'FT')
-    return token.pos_ == "NUM" and token.head.lemma_.upper() in tags
-
-def extract_min_sqft(doc):
-    return [token.text for token in doc
-            if is_sqft(token) and not is_max_quantity(token)]
-
-def extract_max_sqft(doc):
-    return [token.text for token in doc
-            if is_sqft(token) and is_max_quantity(token)]
 
 def is_bed(token):
     tags = ('BED', 'ROOM', 'BEDROOM', 'PEOPLE')
