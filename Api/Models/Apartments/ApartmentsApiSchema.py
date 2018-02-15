@@ -1,5 +1,4 @@
 from marshmallow import Schema, fields
-"""APISchema.py is the Schema for the APIResponse.py object"""
 
 
 class ApiSchema(Schema):

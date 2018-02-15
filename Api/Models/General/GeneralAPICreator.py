@@ -7,9 +7,8 @@ class GeneralAPICreator:
         self.nlp_response = nlp_reponse
         self.schema = GeneralAPISchema()
 
-
     def mapattrs(self):
-        attrs = {}
+        attrs = dict
         attrs['State'] = self.nlp_response['state']
         attrs['City'] = self.nlp_response['city']
         return attrs
