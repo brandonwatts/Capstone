@@ -2,6 +2,7 @@ import re
 import spacy
 from spacy.strings import StringStore
 from spacy.matcher import Matcher
+import us
 
 nlp = spacy.load('en_core_web_lg')
 us_states = StringStore().from_disk('Api/StringStore/States')
@@ -66,31 +67,12 @@ class NLP:
         self._addExtraction("has_laundry_facilities", self.extract_has_laundry_facilities(doc))
         self._addExtraction("property_type", self.extract_property_type(doc))
     
-    def find_head(self, token, function):
-        while token != token.head:
-            if function(token):
-                return token
-            token = token.head
-    
-    def is_noun(self, token):
-        noun_tags = ('NN', 'NNS', 'NNP', 'NNPS')
-        return token.tag_ in noun_tags
-    
-    def is_min_quantity(self, token):
-        min_tags = ("MORE", "GREATER", "OVER")
-        return any(child.text.upper() in min_tags for child in token.children)
-    
-    def is_max_quantity(self, token):
-        max_tags = ("LESS", "UNDER", "BELOW")
-        return any(child.text.upper() in max_tags for child in token.children)
-    
-    def is_state_text(self, token):
-        return token.lemma_.upper() in us_states
-    
     def extract_state(self, doc):
-        return "VA"
-        #return [ent.lemma_.upper() for ent in doc.ents if ent.label_ == 'GPE' and ent.text.upper() in us_states]
-    
+        for entity in doc.ents:
+            if entity.label_ == 'GPE' and entity.lemma_.upper() in us_states:
+                state = self.Utils.abbreviate(entity.lemma_)
+        return state
+
     def extract_city(self, doc):
         return "Richmond"
         #return [ent.lemma_.upper() for ent in doc.ents if ent.label_ == 'GPE' and ent.text.upper() not in us_states]
@@ -106,22 +88,20 @@ class NLP:
     
     def extract_min_sqft(self, doc):
         return [token.text for token in doc
-                if self.is_sqft(token) and not self.is_max_quantity(token)]
+                if self.is_sqft(token) and not self.Utils.is_max_quantity(token)]
     
     def extract_max_sqft(self, doc):
         return [token.text for token in doc
-                if self.is_sqft(token) and self.is_max_quantity(token)]
-    
-    def is_price(self, token):
-        return token.ent_type_ == "MONEY" and token.pos_ == "NUM"
+                if self.is_sqft(token) and self.Utils.is_max_quantity(token)]
+
     
     def extract_min_price(self, doc):
         return [token.text
-                for token in doc if self.is_price(token) and not self.is_max_quantity(token)]
+                for token in doc if self.Utils.is_price(token) and not self.Utils.is_max_quantity(token)]
     
     def extract_max_price(self, doc):
         return [token.text
-                for token in doc if self.is_price(token) and self.is_max_quantity(token)]
+                for token in doc if self.Utils.is_price(token) and self.Utils.is_max_quantity(token)]
     
     def find_pricing_type(self, token):
         for child in token.children:
@@ -132,7 +112,7 @@ class NLP:
     def extract_pricing_type(self, doc):
         types = []
         for token in doc:
-            if self.is_price(token):
+            if self.Utils.is_price(token):
                 result = self.find_pricing_type(token)
                 if result:
                     types.append(result.text)
@@ -144,11 +124,11 @@ class NLP:
     
     def extract_min_bed(self, doc):
         return [token.text for token in doc
-                if self.is_bed(token) and not self.is_max_quantity(token)]
+                if self.is_bed(token) and not self.Utils.is_max_quantity(token)]
     
     def extract_max_bed(self, doc):
         return [token.text for token in doc
-                if self.is_bed(token) and self.is_max_quantity(token)]
+                if self.is_bed(token) and self.Utils.is_max_quantity(token)]
     
     def extract_address(self, doc):
         return [token.text for token in doc if token.ent_type_ == "FAC"]
@@ -158,46 +138,80 @@ class NLP:
         return [token.text for token in doc if token.ent_type_ == "DATE"]
     
     def extract_dog_friendly(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="dog")
+        return self.Utils.containsReferenceTo(doc=doc, reference="dog")
     
     def extract_cat_friendly(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="cat")
+        return self.Utils.containsReferenceTo(doc=doc, reference="cat")
     
     def extract_has_pool(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="pool")
+        return self.Utils.containsReferenceTo(doc=doc, reference="pool")
     
     def extract_has_elevator(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="elevator")
+        return self.Utils.containsReferenceTo(doc=doc, reference="elevator")
     
     def extract_has_fitness_center(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="fitness")
+        return self.Utils.containsReferenceTo(doc=doc, reference="fitness")
     
     def extract_has_wheelchair_access(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="wheelchair") or self.containsReferenceTo(doc=doc, reference='handicapped')
+        return self.Utils.containsReferenceTo(doc=doc, reference="wheelchair") or self.Utils.containsReferenceTo(doc=doc, reference='handicapped')
     
     def extract_has_dishwasher(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="dishwasher")
+        return self.Utils.containsReferenceTo(doc=doc, reference="dishwasher")
     
     def extract_has_air_conditioning(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="air conditioning")
+        return self.Utils.containsReferenceTo(doc=doc, reference="air conditioning")
     
     def extract_has_parking(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="parking")
+        return self.Utils.containsReferenceTo(doc=doc, reference="parking")
     
     def extract_is_furnished(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="furniture")
+        return self.Utils.containsReferenceTo(doc=doc, reference="furniture")
     
     def extract_has_laundry_facilities(self, doc):
-        return self.containsReferenceTo(doc=doc, reference="laundry")
+        return self.Utils.containsReferenceTo(doc=doc, reference="laundry")
     
     def extract_property_type(self, doc):
         return "pt_industrial, pt_retail, pt_shopping_center, pt_multifamily, pt_specialty, pt_office, pt_health_care," \
                "pt_hospitality, pt_sports_and_entertainment, pt_land, pt_residential_income"
-    
-    def containsReferenceTo(self, doc, reference, MATCH_THRESHOLD=0.6):
-        containsReference = False
-        ref = nlp(reference)
-        for token in doc:
-            if token.similarity(ref) > MATCH_THRESHOLD:
-                containsReference = True
-        return containsReference
+
+    class Utils:
+
+        @staticmethod
+        def containsReferenceTo(doc, reference, MATCH_THRESHOLD=0.6):
+            containsReference = False
+            ref = nlp(reference)
+            for token in doc:
+                if token.similarity(ref) > MATCH_THRESHOLD:
+                    containsReference = True
+            return containsReference
+
+        @staticmethod
+        def is_price(token):
+            return token.ent_type_ == "MONEY" and token.pos_ == "NUM"
+
+        @staticmethod
+        def find_head(token, function):
+            while token != token.head:
+                if function(token):
+                    return token
+                token = token.head
+
+        @staticmethod
+        def is_noun(token):
+            noun_tags = ('NN', 'NNS', 'NNP', 'NNPS')
+            return token.tag_ in noun_tags
+
+        @ staticmethod
+        def is_min_quantity(token):
+            min_tags = ("MORE", "GREATER", "OVER")
+            return any(child.text.upper() in min_tags for child in token.children)
+
+        @staticmethod
+        def is_max_quantity(token):
+            max_tags = ("LESS", "UNDER", "BELOW")
+            return any(child.text.upper() in max_tags for child in token.children)
+
+        @staticmethod
+        def abbreviate(state):
+            print("abb", us.states.lookup(state).abbr)
+            return us.states.lookup(state).abbr
