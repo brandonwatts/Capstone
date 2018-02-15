@@ -3,7 +3,7 @@ class Geography(object):
         self.GeographyType = geotype
         self.Address = Address(city, state)
 
-class Listings(object):
+class Listing(object):
     def __init__(self, ratings):
         self.Ratings = ratings
 

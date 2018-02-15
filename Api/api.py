@@ -39,9 +39,9 @@ def on_star_rating_match(matcher, doc, id, matches):
 
 def define_extraction_points(doc):
     geo = Objs.Geography(geotype=2, city=extract_city(doc), state=extract_state(doc))
-    listings = Objs.Listings(ratings=16)
+    listings = Objs.Listing(ratings=16)
     response_builder.add_extraction_point("Geography", geo)
-    response_builder.add_extraction_point("Listings", listings)
+    response_builder.add_extraction_point("Listing", listings)
     response_builder.add_extraction_point("state", extract_state(doc))
     response_builder.add_extraction_point("city", extract_city(doc))
     response_builder.add_extraction_point("zip_code", extract_zip_code(doc))
@@ -89,7 +89,7 @@ def is_state_text(token):
     return token.lemma_.upper() in us_states
 
 def extract_state(doc):
-    return "Virginia"
+    return "VA"
     #return [ent.lemma_.upper() for ent in doc.ents if ent.label_ == 'GPE' and ent.text.upper() in us_states]
 
 def extract_city(doc):

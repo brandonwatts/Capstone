@@ -24,7 +24,7 @@ class ApiSchema(Schema):
 
 
     Geography = fields.Nested(Geography_Class)
-    Listings = fields.Nested(Listing_Class)
+    Listing = fields.Nested(Listing_Class)
 
 
     #state = fields.List(fields.Str())
