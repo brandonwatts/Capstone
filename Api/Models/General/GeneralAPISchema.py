@@ -1,0 +1,31 @@
+from marshmallow import Schema, fields
+
+
+class ApiSchema(Schema):
+    State = fields.List(fields.Str())
+    City = fields.List(fields.Str())
+    Zip_Code = fields.List(fields.Str())
+    Address = fields.List(fields.Str())
+
+# min_sqft = fields.List(fields.Str())
+# max_sqft = fields.List(fields.Str())
+# min_price = fields.List(fields.Str())
+# max_price = fields.List(fields.Str())
+# min_bed = fields.List(fields.Str())
+# max_bed = fields.List(fields.Str())
+# pricing_type = fields.List(fields.Str())
+# build_year = fields.List(fields.Str())
+# dog_friendly = fields.Bool()
+# cat_friendly = fields.Bool()
+# has_pool = fields.Bool()
+# has_elevator = fields.Bool()
+# has_fitness_center = fields.Bool()
+# has_wheelchair_access = fields.Bool()
+# has_dishwasher = fields.Bool()
+# has_air_conditioning = fields.Bool()
+# has_parking = fields.Bool()
+# star_rating = fields.List(fields.Str())
+# is_furnished = fields.Bool()
+# has_laundry_facilities = fields.Bool()
+# property_type = fields.Str()
+# search_radius = fields.Str()
