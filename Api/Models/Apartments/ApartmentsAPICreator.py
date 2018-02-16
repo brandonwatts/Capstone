@@ -25,7 +25,7 @@ class ApartmentsAPICreator:
                 self.Ratings = ratings
 
     def mapattrs(self):
-        attrs = dict
+        attrs = {}
         attrs['Geography'] = self.ApartmentsAPIObjects.Geography(city=self.nlp_response['city'],
                                                                  state=self.nlp_response['state'], geotype=2)
         attrs['Listing'] = self.ApartmentsAPIObjects.Listing(ratings=16)
