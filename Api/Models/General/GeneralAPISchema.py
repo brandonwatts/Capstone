@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 
 
-class ApiSchema(Schema):
+class GeneralAPISchema(Schema):
 
     State = fields.List(fields.Str())
     City = fields.List(fields.Str())

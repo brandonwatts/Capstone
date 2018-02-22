@@ -1,7 +1,7 @@
-from Api.Models.General import GeneralAPISchema
+from Api.Models.General.GeneralAPISchema import GeneralAPISchema
 
 
-class GeneralAPICreator:
+class GeneralAPI:
 
     def __init__(self, nlp_reponse):
         self.nlp_response = nlp_reponse
@@ -13,7 +13,7 @@ class GeneralAPICreator:
         attrs['City'] = self.nlp_response['city']
         return attrs
 
-    def create(self):
+    def call(self):
         api = self.mapattrs()
         response = self.schema.dump(api)
         return response
