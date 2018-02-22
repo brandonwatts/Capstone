@@ -40,9 +40,8 @@ class NLP:
         self.extractions[name] = value
         
     def parse(self, request):
-
+        self.extractions.clear()
         matcher = self._createMatcher()
-
         doc = nlp(request)
         matcher(doc)
         self._define_extraction_points(doc)
