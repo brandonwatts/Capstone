@@ -4,29 +4,73 @@ from spacy.strings import StringStore
 from spacy.matcher import Matcher
 import us
 
+
+def is_sqft(text):
+    sq_fts = ['FEET', 'FOOT', 'SQUAREFEET', 'SQUAREFOOT', 'SQUARE', 'SQFT', 'SQ', 'FT']
+    return text.upper() in sq_fts
+
+def is_max_quantity(text):
+    max_quantites = ["LESS", "UNDER", "BELOW"]
+    return text.upper() in max_quantites
+
+def is_min_quantity(text):
+    min_quantites = ["MORE", "GREATER", "OVER"]
+    return text.upper() in min_quantites
+
+def is_bed(text):
+    bed_quatities = ['BED', 'ROOM', 'BEDROOM', 'PEOPLE']
+    return text.upper() in bed_quatities
+
+
 nlp = spacy.load('en_core_web_lg')
 us_states = StringStore().from_disk('Api/StringStore/States')
 us_state_abbreviations = StringStore().from_disk('Api/StringStore/StateAbbreviations')
+IS_SQFT = nlp.vocab.add_flag(is_sqft)
+IS_MIN_QUANTITY = nlp.vocab.add_flag(is_min_quantity)
+IS_MAX_QUANTITY = nlp.vocab.add_flag(is_max_quantity)
+IS_BED = nlp.vocab.add_flag(is_bed)
 
 
 class NLP:
     
     def __init__(self):
         self.extractions = {}
-        
+
     def _add_extraction(self, name, value):
         self.extractions[name] = value
         
     def parse(self, request):
-        matcher = Matcher(nlp.vocab)
-        star_rating_pattern = [{'IS_DIGIT': True}, {'LEMMA': 'star'}]
-        search_radius_pattern = [{'IS_DIGIT': True}, {'ENT_TYPE': 'QUANTITY'}]
-        matcher.add('StarRating', self.on_star_rating_match, star_rating_pattern)
-        matcher.add('SearchRadius', self.on_search_radius_match, search_radius_pattern)
+
+        matcher = self._createMatcher()
+
         doc = nlp(request)
         matcher(doc)
         self._define_extraction_points(doc)
         return self.extractions
+
+    def _createMatcher(self):
+
+        matcher = Matcher(nlp.vocab)
+
+        star_rating_pattern = [{'IS_DIGIT': True}, {'LEMMA': 'star'}]
+        search_radius_pattern = [{'IS_DIGIT': True}, {'ENT_TYPE': 'QUANTITY'}]
+        min_sqft_pattern = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_SQFT: True}]
+        max_sqft_pattern = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_SQFT: True}]
+        min_price_pattern = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'ENT_TYPE': 'MONEY'}, {'LIKE_NUM': True}]
+        max_price_pattern = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'ENT_TYPE': 'MONEY'}, {'LIKE_NUM': True}]
+        min_bed_pattern = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_BED: True}]
+        max_bed_pattern = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_BED: True}]
+
+        matcher.add('StarRating', self.on_star_rating_match, star_rating_pattern)
+        matcher.add('SearchRadius', self.on_search_radius_match, search_radius_pattern)
+        matcher.add('MinSqft', self.on_min_sqft_match, min_sqft_pattern)
+        matcher.add('MaxSqft', self.on_max_sqft_match, max_sqft_pattern)
+        matcher.add('MinPrice', self.on_min_price_match, min_price_pattern)
+        matcher.add('MaxPrice', self.on_max_price_match, max_price_pattern)
+        matcher.add('MinBed', self.on_min_bed_match, min_bed_pattern)
+        matcher.add('MaxBed', self.on_max_bed_match, max_bed_pattern)
+
+        return matcher
     
     def on_search_radius_match(self, matcher, doc, id, matches):
         match_id, start, end = matches[id]
@@ -40,17 +84,41 @@ class NLP:
             starRating = doc[start:end]
             star_ratings.append(starRating.text)
         self._add_extraction("star_rating", star_ratings)
-    
+
+    def on_min_sqft_match(self, matcher, doc, id, matches):
+        match_id, start, end = matches[id]
+        min_sqft = doc[start:end]
+        self._add_extraction("min_sqft", min_sqft)
+
+    def on_max_sqft_match(self, matcher, doc, id, matches):
+        match_id, start, end = matches[id]
+        max_sqft = doc[start:end]
+        self._add_extraction("max_sqft", max_sqft)
+
+    def on_max_price_match(self, matcher, doc, id, matches):
+        match_id, start, end = matches[id]
+        max_price = doc[start:end]
+        self._add_extraction("max_price", max_price)
+
+    def on_min_price_match(self, matcher, doc, id, matches):
+        match_id, start, end = matches[id]
+        min_price = doc[start:end]
+        self._add_extraction("max_price", min_price)
+
+    def on_min_bed_match(self, matcher, doc, id, matches):
+        match_id, start, end = matches[id]
+        min_bed = doc[start:end]
+        self._add_extraction("min_bed", min_bed)
+
+    def on_max_bed_match(self, matcher, doc, id, matches):
+        match_id, start, end = matches[id]
+        max_bed = doc[start:end]
+        self._add_extraction("max_bed", max_bed)
+
     def _define_extraction_points(self, doc):
         self._add_extraction("state", self.extract_state(doc))
         self._add_extraction("city", self.extract_city(doc))
         self._add_extraction("zip_code", self.extract_zip_code(doc))
-        self._add_extraction("min_sqft", self.extract_min_sqft(doc))
-        self._add_extraction("max_sqft", self.extract_max_sqft(doc))
-        self._add_extraction("min_price", self.extract_min_price(doc))
-        self._add_extraction("max_price", self.extract_max_price(doc))
-        self._add_extraction("min_bed", self.extract_min_bed(doc))
-        self._add_extraction("max_bed", self.extract_max_bed(doc))
         self._add_extraction("pricing_type", self.extract_pricing_type(doc))
         self._add_extraction("address", self.extract_address(doc))
         self._add_extraction("build_year", self.extract_build_year(doc))
@@ -81,39 +149,15 @@ class NLP:
     def extract_zip_code(self, doc):
         return [token.text for token in doc if
                 re.match('\d{5}', token.text) and list(token.children) == []]
-    
-    def extract_min_sqft(self, doc):
-        return [token.text for token in doc
-                if self.Utils.is_sqft(token) and not self.Utils.is_max_quantity(token)]
-    
-    def extract_max_sqft(self, doc):
-        return [token.text for token in doc
-                if self.Utils.is_sqft(token) and self.Utils.is_max_quantity(token)]
-
-    def extract_min_price(self, doc):
-        return [token.text
-                for token in doc if self.Utils.is_price(token) and not self.Utils.is_max_quantity(token)]
-    
-    def extract_max_price(self, doc):
-        return [token.text
-                for token in doc if self.Utils.is_price(token) and self.Utils.is_max_quantity(token)]
 
     def extract_pricing_type(self, doc):
-        types = []
-        for token in doc:
-            if self.Utils.is_price(token):
-                result = self.Utils.find_pricing_type(token)
-                if result:
-                    types.append(result.text)
-        return types
-    
-    def extract_min_bed(self, doc):
-        return [token.text for token in doc
-                if self.Utils.is_bed(token) and not self.Utils.is_max_quantity(token)]
-    
-    def extract_max_bed(self, doc):
-        return [token.text for token in doc
-                if self.Utils.is_bed(token) and self.Utils.is_max_quantity(token)]
+    #    types = []
+     #   for token in doc:
+      #      if self.Utils.is_price(token):
+       #         result = self.Utils.find_pricing_type(token)
+        #        if result:
+         #           types.append(result.text)
+        return True
     
     def extract_address(self, doc):
         return [token.text for token in doc if token.ent_type_ == "FAC"]
@@ -171,45 +215,13 @@ class NLP:
             return containsReference
 
         @staticmethod
-        def is_price(token):
-            return token.ent_type_ == "MONEY" and token.pos_ == "NUM"
-
-        @staticmethod
-        def find_head(token, function):
-            while token != token.head:
-                if function(token):
-                    return token
-                token = token.head
-
-        @staticmethod
         def is_noun(token):
             noun_tags = ('NN', 'NNS', 'NNP', 'NNPS')
             return token.tag_ in noun_tags
 
-        @ staticmethod
-        def is_min_quantity(token):
-            min_tags = ("MORE", "GREATER", "OVER")
-            return any(child.text.upper() in min_tags for child in token.children)
-
-        @staticmethod
-        def is_max_quantity(token):
-            max_tags = ("LESS", "UNDER", "BELOW")
-            return any(child.text.upper() in max_tags for child in token.children)
-
         @staticmethod
         def abbreviate(state):
             return us.states.lookup(state).abbr
-
-        @staticmethod
-        def is_sqft(token):
-            tags = ('FEET', 'FOOT', 'SQUAREFEET', 'SQUAREFOOT',
-                    'SQUARE', 'SQFT', 'SQ', 'FT')
-            return token.pos_ == "NUM" and token.head.lemma_.upper() in tags
-
-        @staticmethod
-        def is_bed(token):
-            tags = ('BED', 'ROOM', 'BEDROOM', 'PEOPLE')
-            return token.pos_ == "NUM" and token.head.lemma_.upper() in tags
 
         @staticmethod
         def find_pricing_type(token):
