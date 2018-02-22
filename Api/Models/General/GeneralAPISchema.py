@@ -3,8 +3,8 @@ from marshmallow import Schema, fields
 
 class GeneralAPISchema(Schema):
 
-    State = fields.List(fields.Str())
-    City = fields.List(fields.Str())
+    State = fields.Str()
+    City = fields.Str()
     Zip_Code = fields.List(fields.Str())
     Address = fields.List(fields.Str())
     Min_Sqft = fields.List(fields.Str())
