@@ -37,7 +37,8 @@ class NLP:
         self.extractions = {}
 
     def _add_extraction(self, name, value):
-        self.extractions[name] = value
+        if value:
+            self.extractions[name] = value
         
     def parse(self, request):
         self.extractions.clear()
@@ -118,7 +119,7 @@ class NLP:
         self._add_extraction("state", self.extract_state(doc))
         self._add_extraction("city", self.extract_city(doc))
         self._add_extraction("zip_code", self.extract_zip_code(doc))
-        self._add_extraction("pricing_type", self.extract_pricing_type(doc))
+        #self._add_extraction("pricing_type", self.extract_pricing_type(doc))
         self._add_extraction("address", self.extract_address(doc))
         self._add_extraction("build_year", self.extract_build_year(doc))
         self._add_extraction("dog_friendly", self.extract_dog_friendly(doc))
@@ -132,7 +133,7 @@ class NLP:
         self._add_extraction("has_parking", self.extract_has_parking(doc))
         self._add_extraction("is_furnished", self.extract_is_furnished(doc))
         self._add_extraction("has_laundry_facilities", self.extract_has_laundry_facilities(doc))
-        self._add_extraction("property_type", self.extract_property_type(doc))
+        #self._add_extraction("property_type", self.extract_property_type(doc))
     
     def extract_state(self, doc):
         for entity in doc.ents:
@@ -149,14 +150,14 @@ class NLP:
         return [token.text for token in doc if
                 re.match('\d{5}', token.text) and list(token.children) == []]
 
-    def extract_pricing_type(self, doc):
+    #def extract_pricing_type(self, doc):
     #    types = []
      #   for token in doc:
       #      if self.Utils.is_price(token):
        #         result = self.Utils.find_pricing_type(token)
         #        if result:
          #           types.append(result.text)
-        return True
+        #return "IN REPAIR"
     
     def extract_address(self, doc):
         return [token.text for token in doc if token.ent_type_ == "FAC"]
@@ -198,9 +199,9 @@ class NLP:
     def extract_has_laundry_facilities(self, doc):
         return self.Utils.containsReferenceTo(doc=doc, reference="laundry")
     
-    def extract_property_type(self, doc):
-        return "pt_industrial, pt_retail, pt_shopping_center, pt_multifamily, pt_specialty, pt_office, pt_health_care," \
-               "pt_hospitality, pt_sports_and_entertainment, pt_land, pt_residential_income"
+    #def extract_property_type(self, doc):
+     #   return "pt_industrial, pt_retail, pt_shopping_center, pt_multifamily, pt_specialty, pt_office, pt_health_care," \
+      #         "pt_hospitality, pt_sports_and_entertainment, pt_land, pt_residential_income"
 
     class Utils:
 
