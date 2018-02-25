@@ -88,22 +88,35 @@ class NLP:
     def on_min_sqft_match(self, matcher, doc, id, matches):
         match_id, start, end = matches[id]
         min_sqft = doc[start:end]
-        self._add_extraction("min_sqft", min_sqft)
+        for token in min_sqft:
+            if token.like_num:
+                value = token
+        self._add_extraction("min_sqft", value)
 
     def on_max_sqft_match(self, matcher, doc, id, matches):
         match_id, start, end = matches[id]
         max_sqft = doc[start:end]
+        for token in max_sqft:
+            if token.like_num:
+                value = token
         self._add_extraction("max_sqft", max_sqft)
 
     def on_max_price_match(self, matcher, doc, id, matches):
         match_id, start, end = matches[id]
         max_price = doc[start:end]
-        self._add_extraction("max_price", max_price)
+        for token in max_price:
+            if token.like_num:
+                value = token
+        self._add_extraction("max_price", value)
 
     def on_min_price_match(self, matcher, doc, id, matches):
         match_id, start, end = matches[id]
         min_price = doc[start:end]
-        self._add_extraction("max_price", min_price)
+        for token in min_price:
+            if token.like_num:
+                value = token
+
+        self._add_extraction("min_price", value)
 
     def on_min_bed_match(self, matcher, doc, id, matches):
         match_id, start, end = matches[id]

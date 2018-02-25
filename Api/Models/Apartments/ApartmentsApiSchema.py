@@ -14,6 +14,10 @@ class ApiSchema(Schema):
 
     class Listing_Class(Schema):
         Ratings = fields.Int()
+        MinRentAmount = fields.Int()
+        MaxRentAmount = fields.Int()
+        MinSqft = fields.Int()
+        MaxSqft = fields.Int()
 
     Geography = fields.Nested(Geography_Class)
     Listing = fields.Nested(Listing_Class)
