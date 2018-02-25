@@ -14,7 +14,7 @@ class GeneralAPISchema(Schema):
     Min_Bed = fields.Str()
     Max_Bed = fields.Str()
     Pricing_Type = fields.Str()
-    Build_Year = fields.Str()
+    Build_Year = fields.Int()
     Dog_Friendly = fields.Bool()
     Cat_Friendly = fields.Bool()
     Has_Pool = fields.Bool()

@@ -60,6 +60,7 @@ class NLP:
         max_price_pattern = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'ENT_TYPE': 'MONEY'}, {'LIKE_NUM': True}]
         min_bed_pattern = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_BED: True}]
         max_bed_pattern = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_BED: True}]
+        build_year_pattern = [{'LOWER': 'built'}, {'LOWER': 'in'}, {'ENT_TYPE': 'DATE'}]
 
         matcher.add('StarRating', self.on_star_rating_match, star_rating_pattern)
         matcher.add('SearchRadius', self.on_search_radius_match, search_radius_pattern)
@@ -69,6 +70,7 @@ class NLP:
         matcher.add('MaxPrice', self.on_max_price_match, max_price_pattern)
         matcher.add('MinBed', self.on_min_bed_match, min_bed_pattern)
         matcher.add('MaxBed', self.on_max_bed_match, max_bed_pattern)
+        matcher.add('BuildYear', self.on_build_year_match, build_year_pattern)
 
         return matcher
     
@@ -76,6 +78,14 @@ class NLP:
         match_id, start, end = matches[id]
         searchRadius = doc[start:end]
         self._add_extraction("search_radius", searchRadius)
+
+    def on_build_year_match(self, matcher, doc, id, matches):
+        match_id, start, end = matches[id]
+        build_year = doc[start:end]
+        for token in build_year:
+            if token.like_num:
+                value = token
+        self._add_extraction("build_year", token)
     
     def on_star_rating_match(self, matcher, doc, id, matches):
         star_ratings = []
@@ -134,7 +144,6 @@ class NLP:
         self._add_extraction("zip_code", self.extract_zip_code(doc))
         #self._add_extraction("pricing_type", self.extract_pricing_type(doc))
         self._add_extraction("address", self.extract_address(doc))
-        self._add_extraction("build_year", self.extract_build_year(doc))
         self._add_extraction("dog_friendly", self.extract_dog_friendly(doc))
         self._add_extraction("cat_friendly", self.extract_cat_friendly(doc))
         self._add_extraction("has_pool", self.extract_has_pool(doc))
@@ -174,10 +183,6 @@ class NLP:
     
     def extract_address(self, doc):
         return [token.text for token in doc if token.ent_type_ == "FAC"]
-    
-    def extract_build_year(self, doc):
-        # TODO Min & Max Year
-        return [token.text for token in doc if token.ent_type_ == "DATE"]
     
     def extract_dog_friendly(self, doc):
         return self.Utils.containsReferenceTo(doc=doc, reference="dog")
