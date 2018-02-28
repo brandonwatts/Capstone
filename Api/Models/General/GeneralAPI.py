@@ -36,7 +36,8 @@ class GeneralAPI:
         """
         
         return {field: self.nlp_response[field.lower()]
-                for field in GeneralAPISchema._declared_fields.keys()}
+                for field in GeneralAPISchema._declared_fields.keys()
+                if field.lower() in self.nlp_response}
 
     def call(self):
         api = self.mapattrs()
