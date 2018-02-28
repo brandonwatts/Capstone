@@ -2,7 +2,6 @@ from marshmallow import Schema, fields
 
 
 class GeneralAPISchema(Schema):
-
     State = fields.Str()
     City = fields.Str()
     Zip_Code = fields.Str()

@@ -8,7 +8,7 @@ class GeneralAPI:
         self.schema = GeneralAPISchema()
 
     def mapattrs(self):
-        attrs = {}
+        """
         if 'state' in self.nlp_response : attrs['State'] = self.nlp_response['state']
         if 'city' in self.nlp_response : attrs['City'] = self.nlp_response['city']
         if 'zip_code' in self.nlp_response : attrs['Zip_Code'] = self.nlp_response['zip_code']
@@ -29,12 +29,14 @@ class GeneralAPI:
         if 'has_dishwasher' in self.nlp_response : attrs['Has_Dishwasher'] = self.nlp_response['has_dishwasher']
         if 'has_air_conditioning' in self.nlp_response : attrs['Has_Air_Conditioning'] = self.nlp_response['has_air_conditioning']
         if 'has_parking' in self.nlp_response : attrs['Has_Parking'] = self.nlp_response['has_parking']
-        if 'has_star_rating' in self.nlp_response : attrs['Star_Rating'] = self.nlp_response.get('star_rating')
+        if 'has_star_rating' in self'Zip_Cod.nlp_response : attrs['Star_Rating'] = self.nlp_response.get('star_rating')
         if 'is_furnished' in self.nlp_response : attrs['Furnished'] = self.nlp_response['is_furnished']
         if 'has_laundry_facilities' in self.nlp_response : attrs['Has_Laundry_Facilities'] = self.nlp_response['has_laundry_facilities']
         if 'property_type' in self.nlp_response : attrs['Property_Type'] = self.nlp_response['property_type']
-
-        return attrs
+        """
+        
+        return {field: self.nlp_response[field.lower()]
+                for field in GeneralAPISchema._declared_fields.keys()}
 
     def call(self):
         api = self.mapattrs()
