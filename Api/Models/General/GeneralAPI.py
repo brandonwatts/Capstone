@@ -6,7 +6,7 @@ class GeneralAPI:
     def __init__(self, nlp_reponse):
         self.nlp_response = nlp_reponse
         self.schema = GeneralAPISchema()
-
+    
     def mapattrs(self):
         """
         if 'state' in self.nlp_response : attrs['State'] = self.nlp_response['state']
@@ -34,7 +34,6 @@ class GeneralAPI:
         if 'has_laundry_facilities' in self.nlp_response : attrs['Has_Laundry_Facilities'] = self.nlp_response['has_laundry_facilities']
         if 'property_type' in self.nlp_response : attrs['Property_Type'] = self.nlp_response['property_type']
         """
-        
         return {field: self.nlp_response[field.lower()]
                 for field in GeneralAPISchema._declared_fields.keys()
                 if field.lower() in self.nlp_response}

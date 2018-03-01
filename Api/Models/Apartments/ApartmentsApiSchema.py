@@ -2,9 +2,10 @@ from marshmallow import Schema, fields
 
 
 class ApiSchema(Schema):
-
+    """
+    This schema is used for searching https://www.apartments.com/services/search/
+    """
     class Geography_Class(Schema):
-
         class Address_Class(Schema):
             City = fields.String()
             State = fields.String()
