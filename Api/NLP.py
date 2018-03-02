@@ -4,7 +4,8 @@ from spacy.strings import StringStore
 from spacy.matcher import Matcher
 import us
 
-nlp = spacy.load('en_core_web_lg')
+nlp = spacy.load('en')
+#nlp = spacy.load('en_core_web_lg')
 
 us_states = StringStore().from_disk('Api/StringStore/States')
 us_state_abbreviations = StringStore().from_disk('Api/StringStore/StateAbbreviations')
@@ -29,10 +30,10 @@ class NLP:
         matcher = Matcher(nlp.vocab)
 
         # used for defining patterns for the matcher
-        IS_SQFT = nlp.vocab.add_flag(is_sqft)
-        IS_MIN_QUANTITY = nlp.vocab.add_flag(is_min_quantity)
-        IS_MAX_QUANTITY = nlp.vocab.add_flag(is_max_quantity)
-        IS_BED = nlp.vocab.add_flag(is_bed)
+        IS_SQFT = nlp.vocab.add_flag(Utils.is_sqft)
+        IS_MIN_QUANTITY = nlp.vocab.add_flag(Utils.is_min_quantity)
+        IS_MAX_QUANTITY = nlp.vocab.add_flag(Utils.is_max_quantity)
+        IS_BED = nlp.vocab.add_flag(Utils.is_bed)
         
         star_rating_pattern = [{'IS_DIGIT': True}, {'LEMMA': 'star'}]
         search_radius_pattern = [{'IS_DIGIT': True}, {'ENT_TYPE': 'QUANTITY'}]
@@ -143,7 +144,7 @@ class NLP:
     def extract_state(self, doc):
         for entity in doc.ents:
             if entity.label_ == 'GPE' and entity.lemma_.upper() in us_states:
-                state = self.Utils.abbreviate(entity.lemma_)
+                state = Utils.abbreviate(entity.lemma_)
                 return state
 
     def extract_city(self, doc):
@@ -185,7 +186,7 @@ class NLP:
         return Utils.containsReferenceTo(doc=doc, reference="fitness")
     
     def extract_has_wheelchair_access(self, doc):
-        return Utils.containsReferenceTo(doc=doc, reference="wheelchair") or self.Utils.containsReferenceTo(doc=doc, reference='handicapped')
+        return Utils.containsReferenceTo(doc=doc, reference="wheelchair") or Utils.containsReferenceTo(doc=doc, reference='handicapped')
     
     def extract_has_dishwasher(self, doc):
         return Utils.containsReferenceTo(doc=doc, reference="dishwasher")

@@ -100,7 +100,12 @@ class ApartmentsAPI:
         attrs = {}
         attrs['Geography'] = self.ApartmentsAPIObjects.Geography(city=self.nlp_response['city'],
                                                                  state=self.nlp_response['state'], geotype=2)
-        attrs['Listing'] = self.ApartmentsAPIObjects.Listing(ratings=16, min_price=self.nlp_response.get('min_price'), amenities=self.nlp_format_amenities_to_apartments_format(self))
+        attrs['Listing'] = self.ApartmentsAPIObjects.Listing(ratings=16,
+                                                             min_price=self.nlp_response.get('min_price'),
+                                                             max_price=self.nlp_response.get('max_price'),
+                                                             min_sqft=self.nlp_response.get('min_sqft'),
+                                                             max_sqft=self.nlp_response.get('max_sqft'),
+                                                             amenities=self.nlp_format_amenities_to_apartments_format())
         return attrs
 
     # pulls data from the search enpoint and then the info endpoint
