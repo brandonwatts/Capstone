@@ -57,6 +57,24 @@ amenity_codes = {
     'LOFTS'						: 8388608
 }
 
+'''
+--- Star Rating Codes ---
+
+5 Star      16
+4 Star      8
+3 Star      4
+2 Star      2
+1 Star      1
+'''
+
+rating_codes = {
+    1 : 1,
+    2 : 2,
+    3 : 4,
+    4 : 8,
+    5 : 16
+}
+
 class ApartmentsAPI:
     def __init__(self, nlp_reponse):
         self.nlp_response = nlp_reponse
@@ -88,19 +106,26 @@ class ApartmentsAPI:
                     self.Amenities = amenities
 
     # Maps all the amenity filters our nlp_response tells us to use to the encoding for apartments.com
-    def nlp_format_amenities_to_apartments_format(self):
+    def map_amenities(self):
         amenity_code = 0
         for i in self.nlp_response:
             if i in amenity_nlp_format_to_apartments_format:
                 amenity_code += amenity_codes[i]
         return amenity_code
 
+    def map_ratings(self):
+        rating_code = 0
+        if "star_rating" in self.nlp_response:
+            for i in self.nlp_response["star_rating"]:
+                rating_code += rating_codes[i]
+        return rating_code
+
     # converts the nlp_response into the schema format 
     def mapattrs(self):
         attrs = {}
         attrs['Geography'] = self.ApartmentsAPIObjects.Geography(city=self.nlp_response['city'],
                                                                  state=self.nlp_response['state'], geotype=2)
-        attrs['Listing'] = self.ApartmentsAPIObjects.Listing(ratings=16, min_price=self.nlp_response.get('min_price'), amenities=self.nlp_format_amenities_to_apartments_format(self))
+        attrs['Listing'] = self.ApartmentsAPIObjects.Listing(ratings=self.map_ratings(self), min_price=self.nlp_response.get('min_price'), amenities=self.map_amenities(self))
         return attrs
 
     # pulls data from the search enpoint and then the info endpoint
