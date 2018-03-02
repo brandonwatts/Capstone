@@ -19,6 +19,7 @@ class ApiSchema(Schema):
         MaxRentAmount = fields.Int()
         MinSqft = fields.Int()
         MaxSqft = fields.Int()
+        Amenities = fields.Int()
 
     Geography = fields.Nested(Geography_Class)
     Listing = fields.Nested(Listing_Class)
