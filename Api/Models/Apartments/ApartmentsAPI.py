@@ -1,4 +1,5 @@
 from Api.Models.Apartments.ApartmentsApiSchema import ApiSchema
+import asyncio
 import json
 import requests
 import re
@@ -137,7 +138,7 @@ class ApartmentsAPI:
     def call(self):
         Apartments_API = self.create()
         Apartment_IDS, Search_Criteria = self.callSearchEndpointWith(Apartments_API)
-        return self.callInfoEndpointWith(Apartment_IDS, Search_Criteria)
+        return self.callInfoEndpointWithAll(Apartment_IDS, Search_Criteria)
 
     # formats the query for the search endpoint
     def create(self):
@@ -163,20 +164,22 @@ class ApartmentsAPI:
         ids_list = [ids[0][0]] + [id[1] for id in ids[1:]]
         return ids_list
 
-    # returns property information of the given keys
-    def callInfoEndpointWith(self, apartment_keys, search_criteria):
-        apartment_results = {}
-        apartments = []
+    async def callInfoEndpointWith(self, key, search_criteria):
+        url = "https://www.apartments.com/services/property/infoCardData"
+        call = {'ListingKeys': [str(key)], 'SearchCriteria': search_criteria}
+        data = json.dumps(call)
+        headers = {'Content-Type': 'application/json'}
         
-        for key in apartment_keys:
-            call = {}
-            call['ListingKeys'] = [str(key)]
-            call['SearchCriteria'] = search_criteria
-            data = json.dumps(call)
-            headers = {'Content-Type': 'application/json'}
-            result = requests.post("https://www.apartments.com/services/property/infoCardData", data=data, headers=headers)
-            apartment_instance = json.loads(result.text)
-            apartments.append(apartment_instance)
-
-        apartment_results['apartments'] = apartments
-        return apartment_results
+        loop = asyncio.get_event_loop()
+        future = loop.run_in_executor(None, lambda: requests.post(url, data, headers=headers))
+        
+        result = await future
+        return json.loads(result.text)
+    
+    # returns property information of the given keys
+    def callInfoEndpointWithAll(self, apartment_keys, search_criteria):
+        loop = asyncio.get_event_loop()
+        apartments = loop.run_until_complete(
+            asyncio.gather(*[self.callInfoEndpointWith(key, search_criteria)
+                             for key in apartment_keys]))
+        return {'apartments': apartments}
