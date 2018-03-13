@@ -149,7 +149,7 @@ class ApartmentsAPI:
 
     # returns the unextracted keys and search criteria from the search endpoint
     def callSearchEndpointWith(self, data):
-        data = json.dumps(data.data)
+        data = json.dumps(data)
         headers = {'Content-Type': 'application/json'}
         result = requests.post("https://www.apartments.com/services/search/", data=data, headers=headers)
         search_criteria = json.loads(result.text)["SearchCriteria"]
