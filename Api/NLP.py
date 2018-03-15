@@ -3,12 +3,13 @@ import spacy
 from spacy.strings import StringStore
 from spacy.matcher import Matcher
 import us
+from pathlib import Path
 
 nlp = spacy.load('en')
 #nlp = spacy.load('en_core_web_lg')
 
-us_states = StringStore().from_disk('Api/StringStore/States')
-us_state_abbreviations = StringStore().from_disk('Api/StringStore/StateAbbreviations')
+us_states = StringStore().from_disk(Path("Api/StringStore/States").resolve())
+us_state_abbreviations = StringStore().from_disk(Path("Api/StringStore/StateAbbreviations").resolve())
 
 class NLP:
     def __init__(self):
