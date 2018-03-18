@@ -1,9 +1,34 @@
 import unittest
 import spacy
+import Api.Models.Apartments.ApartmentsAPI as ApartmentsAPI
 from Api.NLP import NLP
 
 nlp_class = NLP()
 nlp = spacy.load('en')
+
+class TestMapAmenities(unittest.TestCase):
+
+    def testSingleAmenityCode(self):
+        api = ApartmentsAPI.ApartmentsAPI(nlp_class.parse("Show me all apartments that have a pool in Richmond, VA"))
+        amenity_code = api.map_amenities()
+        self.assertEqual(amenity_code, 512)
+
+    def testMultipleAmenitiesCode(self):
+        api = ApartmentsAPI.ApartmentsAPI(nlp_class.parse("Show me all apartments that have a pool and a dishwasher in Richmond, VA"))
+        amenity_code = api.map_amenities()
+        self.assertEqual(amenity_code, 512 + 4)
+
+class TestMapRatings(unittest.TestCase):
+
+    def testSingleRatingCode(self):
+        api = ApartmentsAPI.ApartmentsAPI(nlp_class.parse("Show me all 5 star apartments in Richmond, VA"))
+        rating_code = api.map_ratings()
+        self.assertEqual(rating_code, 16)
+
+    def testSingleRatingCode(self):
+        api = ApartmentsAPI.ApartmentsAPI(nlp_class.parse("Show me all 4 star and 5 star apartments in Richmond, VA"))
+        rating_code = api.map_ratings()
+        self.assertEqual(rating_code, 8 + 16)
 
 
 class TestStateExtraction(unittest.TestCase):
@@ -61,6 +86,11 @@ class TestZipCodeExtraction(unittest.TestCase):
 
     def testZipCodeByItself(self):
         doc = nlp("List houses in the 23269 area code of Richmond.")
+        zip_code = nlp_class.extract_zip_code(doc)
+        self.assertEqual(zip_code, ['23269'])
+
+    def testZipCodeNoState(self):
+        doc = nlp("List apartments in the 23269 area")
         zip_code = nlp_class.extract_zip_code(doc)
         self.assertEqual(zip_code, ['23269'])
 

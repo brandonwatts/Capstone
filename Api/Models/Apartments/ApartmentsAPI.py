@@ -111,14 +111,15 @@ class ApartmentsAPI:
         amenity_code = 0
         for i in self.nlp_response:
             if i in amenity_nlp_format_to_apartments_format:
-                amenity_code += amenity_codes[i]
+                amenity_code += amenity_codes[amenity_nlp_format_to_apartments_format[i]]
         return amenity_code
     
     def map_ratings(self):
         rating_code = 0
         if "star_rating" in self.nlp_response:
             for i in self.nlp_response["star_rating"]:
-                rating_code += rating_codes[i]
+                rating_number = [int(s) for s in i.split() if s.isdigit()]
+                rating_code += rating_codes[rating_number[0]]
         return rating_code
     
     # converts the nlp_response into the schema format 

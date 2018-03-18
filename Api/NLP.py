@@ -36,25 +36,25 @@ class NLP:
         IS_MAX_QUANTITY = nlp.vocab.add_flag(Utils.is_max_quantity)
         IS_BED = nlp.vocab.add_flag(Utils.is_bed)
         
-        star_rating_pattern = [{'IS_DIGIT': True}, {'LEMMA': 'star'}]
-        search_radius_pattern = [{'IS_DIGIT': True}, {'ENT_TYPE': 'QUANTITY'}]
-        min_sqft_pattern = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_SQFT: True}]
-        max_sqft_pattern = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_SQFT: True}]
-        min_price_pattern = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'ENT_TYPE': 'MONEY'}, {'LIKE_NUM': True}]
-        max_price_pattern = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'ENT_TYPE': 'MONEY'}, {'LIKE_NUM': True}]
-        min_bed_pattern = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_BED: True}]
-        max_bed_pattern = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_BED: True}]
-        build_year_pattern = [{'LOWER': 'built'}, {'LOWER': 'in'}, {'ENT_TYPE': 'DATE'}]
+        star_rating_pattern     = [{'IS_DIGIT': True}, {'LEMMA': 'star'}]
+        search_radius_pattern   = [{'IS_DIGIT': True}, {'ENT_TYPE': 'QUANTITY'}]
+        min_sqft_pattern        = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_SQFT: True}]
+        max_sqft_pattern        = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_SQFT: True}]
+        min_price_pattern       = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'ENT_TYPE': 'MONEY'}, {'LIKE_NUM': True}]
+        max_price_pattern       = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'ENT_TYPE': 'MONEY'}, {'LIKE_NUM': True}]
+        min_bed_pattern         = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_BED: True}]
+        max_bed_pattern         = [{IS_MAX_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_BED: True}]
+        build_year_pattern      = [{'LOWER': 'built'}, {'LOWER': 'in'}, {'ENT_TYPE': 'DATE'}]
 
-        matcher.add('StarRating', self.on_star_rating_match, star_rating_pattern)
+        matcher.add('StarRating',   self.on_star_rating_match, star_rating_pattern)
         matcher.add('SearchRadius', self.on_search_radius_match, search_radius_pattern)
-        matcher.add('MinSqft', self.on_min_sqft_match, min_sqft_pattern)
-        matcher.add('MaxSqft', self.on_max_sqft_match, max_sqft_pattern)
-        matcher.add('MinPrice', self.on_min_price_match, min_price_pattern)
-        matcher.add('MaxPrice', self.on_max_price_match, max_price_pattern)
-        matcher.add('MinBed', self.on_min_bed_match, min_bed_pattern)
-        matcher.add('MaxBed', self.on_max_bed_match, max_bed_pattern)
-        matcher.add('BuildYear', self.on_build_year_match, build_year_pattern)
+        matcher.add('MinSqft',      self.on_min_sqft_match, min_sqft_pattern)
+        matcher.add('MaxSqft',      self.on_max_sqft_match, max_sqft_pattern)
+        matcher.add('MinPrice',     self.on_min_price_match, min_price_pattern)
+        matcher.add('MaxPrice',     self.on_max_price_match, max_price_pattern)
+        matcher.add('MinBed',       self.on_min_bed_match, min_bed_pattern)
+        matcher.add('MaxBed',       self.on_max_bed_match, max_bed_pattern)
+        matcher.add('BuildYear',    self.on_build_year_match, build_year_pattern)
 
         return matcher
     
@@ -123,23 +123,23 @@ class NLP:
         self._add_extraction("max_bed", max_bed)
 
     def _define_extraction_points(self, doc):
-        self._add_extraction("state", self.extract_state(doc))
-        self._add_extraction("city", self.extract_city(doc))
-        self._add_extraction("zip_code", self.extract_zip_code(doc))
-        #self._add_extraction("pricing_type", self.extract_pricing_type(doc))
-        self._add_extraction("address", self.extract_address(doc))
-        self._add_extraction("dog_friendly", self.extract_dog_friendly(doc))
-        self._add_extraction("cat_friendly", self.extract_cat_friendly(doc))
-        self._add_extraction("has_pool", self.extract_has_pool(doc))
-        self._add_extraction("has_elevator", self.extract_has_elevator(doc))
-        self._add_extraction("has_fitness_center", self.extract_has_fitness_center(doc))
-        self._add_extraction("has_wheelchair_access", self.extract_has_wheelchair_access(doc))
-        self._add_extraction("has_dishwasher", self.extract_has_dishwasher(doc))
-        self._add_extraction("has_air_conditioning", self.extract_has_air_conditioning(doc))
-        self._add_extraction("has_parking", self.extract_has_parking(doc))
-        self._add_extraction("is_furnished", self.extract_is_furnished(doc))
-        self._add_extraction("has_laundry_facilities", self.extract_has_laundry_facilities(doc))
-        #self._add_extraction("property_type", self.extract_property_type(doc))
+        self._add_extraction("state",                   self.extract_state(doc))
+        self._add_extraction("city",                    self.extract_city(doc))
+        self._add_extraction("zip_code",                self.extract_zip_code(doc))
+        #self._add_extraction("pricing_type",           self.extract_pricing_type(doc))
+        self._add_extraction("address",                 self.extract_address(doc))
+        self._add_extraction("dog_friendly",            self.extract_dog_friendly(doc))
+        self._add_extraction("cat_friendly",            self.extract_cat_friendly(doc))
+        self._add_extraction("has_pool",                self.extract_has_pool(doc))
+        self._add_extraction("has_elevator",            self.extract_has_elevator(doc))
+        self._add_extraction("has_fitness_center",      self.extract_has_fitness_center(doc))
+        self._add_extraction("has_wheelchair_access",   self.extract_has_wheelchair_access(doc))
+        self._add_extraction("has_dishwasher",          self.extract_has_dishwasher(doc))
+        self._add_extraction("has_air_conditioning",    self.extract_has_air_conditioning(doc))
+        self._add_extraction("has_parking",             self.extract_has_parking(doc))
+        self._add_extraction("is_furnished",            self.extract_is_furnished(doc))
+        self._add_extraction("has_laundry_facilities",  self.extract_has_laundry_facilities(doc))
+        #self._add_extraction("property_type",          self.extract_property_type(doc))
 
     # TODO: convert more of these extraction functions to the matcher format
     def extract_state(self, doc):

@@ -16,10 +16,10 @@ nlp = NLP()
 class NlpEndpoints(Resource):
     @api.expect(parser, validate=True)
     def get(self):
-        args = parser.parse_args()
-        request = args['request']
-        request_type = args['request_type']
-        nlp_results = nlp.parse(request)
+        args            = parser.parse_args()
+        request         = args['request']
+        request_type    = args['request_type']
+        nlp_results     = nlp.parse(request)
 
         if request_type == "General":
             API = GeneralAPI(nlp_results)
