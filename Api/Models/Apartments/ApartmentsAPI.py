@@ -1,8 +1,8 @@
-from Api.Models.Apartments.ApartmentsApiSchema import ApiSchema
 import json
-from Api.Models.Apartments.SearchEndpoint import SearchEndpoint
-from Api.Models.Apartments.InfoEndpoint import InfoEndpoint
 
+from ApartmentsApiSchema import ApiSchema
+from InfoEndpoint import InfoEndpoint
+from SearchEndpoint import SearchEndpoint
 
 '''
 --- Amenity Codes ---
