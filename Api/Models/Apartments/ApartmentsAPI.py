@@ -1,10 +1,8 @@
 from Api.Models.Apartments.ApartmentsApiSchema import ApiSchema
-import asyncio
 import json
-import requests
-import re
+from Api.Models.Apartments.SearchEndpoint import SearchEndpoint
+from Api.Models.Apartments.InfoEndpoint import InfoEndpoint
 
-pattern = re.compile("(^[a-z0-9]*(?=|))|((?<=[0-9]~)[a-z0-9]*(?=|))")
 
 '''
 --- Amenity Codes ---
@@ -69,17 +67,21 @@ amenity_codes = {
 '''
 
 rating_codes = {
-    1 : 1,
-    2 : 2,
-    3 : 4,
-    4 : 8,
-    5 : 16
+    1: 1,
+    2: 2,
+    3: 4,
+    4: 8,
+    5: 16
 }
 
+
 class ApartmentsAPI:
+
     def __init__(self, nlp_reponse):
         self.nlp_response = nlp_reponse
         self.schema = ApiSchema()
+        self.search_endpoint = SearchEndpoint()
+        self.info_endpoint = InfoEndpoint()
 
     class ApartmentsAPIObjects:
         class Geography(object):
@@ -125,62 +127,26 @@ class ApartmentsAPI:
     # converts the nlp_response into the schema format 
     def mapattrs(self):
         attrs = {}
-        attrs['Geography'] = self.ApartmentsAPIObjects.Geography(city=self.nlp_response['city'],
-                                                                 state=self.nlp_response['state'], geotype=2)
+        attrs['Geography'] = self.ApartmentsAPIObjects.Geography(city=self.nlp_response.get('city'),
+                                                                 state=self.nlp_response.get('state'), geotype=2)
         attrs['Listing'] = self.ApartmentsAPIObjects.Listing(ratings=self.map_ratings(),
                                                              min_price=self.nlp_response.get('min_price'),
                                                              max_price=self.nlp_response.get('max_price'),
                                                              min_sqft=self.nlp_response.get('min_sqft'),
                                                              max_sqft=self.nlp_response.get('max_sqft'),
-                                                             amenities=self.map_amenities())
+                                                             amenities=self.map_amenities()
+                                                             )
         return attrs
 
     # pulls data from the search enpoint and then the info endpoint
     def call(self):
         Apartments_API = self.create()
-        Apartment_IDS, Search_Criteria = self.callSearchEndpointWith(Apartments_API)
-        return self.callInfoEndpointWithAll(Apartment_IDS, Search_Criteria)
+        Apartment_IDS, Search_Criteria = self.search_endpoint.call(Apartments_API)
+        listings = self.info_endpoint.call(Apartment_IDS, Search_Criteria)
+        return listings
 
     # formats the query for the search endpoint
     def create(self):
         api = self.mapattrs()
         response = self.schema.dump(api)
-        print(response)
-        return response
-
-    # returns the unextracted keys and search criteria from the search endpoint
-    def callSearchEndpointWith(self, data):
-        data = json.dumps(data)
-        headers = {'Content-Type': 'application/json'}
-        result = requests.post("https://www.apartments.com/services/search/", data=data, headers=headers)
-        search_criteria = json.loads(result.text)["SearchCriteria"]
-        result = self.cleanResult(result)
-        return result, search_criteria
-
-    # returns the keys from the search endpoint
-    def cleanResult(self, result):
-        result = json.loads(result.text)
-        cl = result['PinsState']['cl']
-        ids = re.findall(pattern, cl)
-        ids_list = [ids[0][0]] + [id[1] for id in ids[1:]]
-        return ids_list
-
-    async def callInfoEndpointWith(self, key, search_criteria):
-        url = "https://www.apartments.com/services/property/infoCardData"
-        call = {'ListingKeys': [str(key)], 'SearchCriteria': search_criteria}
-        data = json.dumps(call)
-        headers = {'Content-Type': 'application/json'}
-        
-        loop = asyncio.get_event_loop()
-        future = loop.run_in_executor(None, lambda: requests.post(url, data, headers=headers))
-        
-        result = await future
-        return json.loads(result.text)
-    
-    # returns property information of the given keys
-    def callInfoEndpointWithAll(self, apartment_keys, search_criteria):
-        loop = asyncio.get_event_loop()
-        apartments = loop.run_until_complete(
-            asyncio.gather(*[self.callInfoEndpointWith(key, search_criteria)
-                             for key in apartment_keys]))
-        return {'apartments': apartments}
+        return json.dumps(response.data)
