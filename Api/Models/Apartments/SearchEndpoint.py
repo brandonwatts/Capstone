@@ -8,6 +8,7 @@ class SearchEndpoint:
 
     This Endpoint is used to obtain the apartment ids and search criteria of a given JSON search query. The JSON search
     query is built by the ApartmentsAPI class.
+
     """
 
     def __init__(self):

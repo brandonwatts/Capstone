@@ -84,8 +84,11 @@ class ApartmentsAPI:
         self.info_endpoint = InfoEndpoint()
 
     class ApartmentsAPIObjects:
+
         class Geography(object):
+
             class Address(object):
+
                 def __init__(self, city, state):
                     self.City = city
                     self.State = state
@@ -95,6 +98,7 @@ class ApartmentsAPI:
                 self.Address = self.Address(city, state)
 
         class Listing(object):
+
             def __init__(self, ratings, min_price, max_price, min_sqft, max_sqft, amenities):
                 self.Ratings = ratings
                 if min_price:
@@ -124,11 +128,14 @@ class ApartmentsAPI:
                 rating_code += rating_codes[rating_number[0]]
         return rating_code
     
-    # converts the nlp_response into the schema format 
     def mapattrs(self):
+        """ Maps the result returned by NLP.py into the correct API Schema designated by CoStar """
+
         attrs = {}
+
         attrs['Geography'] = self.ApartmentsAPIObjects.Geography(city=self.nlp_response.get('city'),
                                                                  state=self.nlp_response.get('state'), geotype=2)
+
         attrs['Listing'] = self.ApartmentsAPIObjects.Listing(ratings=self.map_ratings(),
                                                              min_price=self.nlp_response.get('min_price'),
                                                              max_price=self.nlp_response.get('max_price'),

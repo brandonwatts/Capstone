@@ -2,18 +2,21 @@ from marshmallow import Schema, fields
 
 
 class ApiSchema(Schema):
+
+    """ This is the Schema for the return value on the ApartmentsAPI class.
+
     """
-    This schema is used for searching https://www.apartments.com/services/search/
-    """
-    class Geography_Class(Schema):
-        class Address_Class(Schema):
+    class GeographyClass(Schema):
+
+        class AddressClass(Schema):
             City = fields.String()
             State = fields.String()
 
         GeographyType = fields.Int()
-        Address = fields.Nested(Address_Class)
+        Address = fields.Nested(AddressClass)
 
-    class Listing_Class(Schema):
+    class ListingClass(Schema):
+
         Ratings = fields.Int()
         MinRentAmount = fields.Int()
         MaxRentAmount = fields.Int()
@@ -21,5 +24,5 @@ class ApiSchema(Schema):
         MaxSqft = fields.Int()
         Amenities = fields.Int()
 
-    Geography = fields.Nested(Geography_Class)
-    Listing = fields.Nested(Listing_Class)
+    Geography = fields.Nested(GeographyClass)
+    Listing = fields.Nested(ListingClass)
