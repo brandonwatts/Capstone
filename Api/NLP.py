@@ -5,8 +5,8 @@ from spacy.matcher import Matcher
 import us
 from pathlib import Path
 
-nlp = spacy.load('en')
-#nlp = spacy.load('en_core_web_lg')
+#nlp = spacy.load('en')
+nlp = spacy.load('en_core_web_lg')
 
 us_states = StringStore().from_disk(Path("Api/StringStore/States").resolve())
 us_state_abbreviations = StringStore().from_disk(Path("Api/StringStore/StateAbbreviations").resolve())
@@ -139,7 +139,6 @@ class NLP:
         self._add_extraction("has_parking",             self.extract_has_parking(doc))
         self._add_extraction("is_furnished",            self.extract_is_furnished(doc))
         self._add_extraction("has_laundry_facilities",  self.extract_has_laundry_facilities(doc))
-        #self._add_extraction("property_type",          self.extract_property_type(doc))
 
     # TODO: convert more of these extraction functions to the matcher format
     def extract_state(self, doc):
@@ -199,16 +198,11 @@ class NLP:
         return Utils.containsReferenceTo(doc=doc, reference="parking")
     
     def extract_is_furnished(self, doc):
-        return Utils.containsReferenceTo(doc=doc, reference="furniture")
+        return Utils.containsReferenceTo(doc=doc, reference="furnished", MATCH_THRESHOLD=0.75)
     
     def extract_has_laundry_facilities(self, doc):
         return Utils.containsReferenceTo(doc=doc, reference="laundry")
 
-    """
-    def extract_property_type(self, doc):
-        return "pt_industrial, pt_retail, pt_shopping_center, pt_multifamily, pt_specialty, pt_office, pt_health_care," \
-               "pt_hospitality, pt_sports_and_entertainment, pt_land, pt_residential_income"
-    """
 
 class Utils:
     """
@@ -217,7 +211,7 @@ class Utils:
     """
 
     @staticmethod
-    def containsReferenceTo(doc, reference, MATCH_THRESHOLD=0.6):
+    def containsReferenceTo(doc, reference, MATCH_THRESHOLD=0.65):
         containsReference = False
         ref = nlp(reference)
         for token in doc:
@@ -260,3 +254,5 @@ class Utils:
     def is_bed(text):
         bed_quatities = ['BED', 'ROOM', 'BEDROOM', 'PEOPLE']
         return text.upper() in bed_quatities
+
+

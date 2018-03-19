@@ -1,34 +1,35 @@
 import unittest
 import spacy
-import Api.Models.Apartments.ApartmentsAPI as ApartmentsAPI
+from Api.Models.Apartments.ApartmentsAPI import ApartmentsAPI
 from Api.NLP import NLP
 
 nlp_class = NLP()
-nlp = spacy.load('en')
+nlp = spacy.load('en_core_web_lg')
 
 class TestMapAmenities(unittest.TestCase):
 
     def testSingleAmenityCode(self):
-        api = ApartmentsAPI.ApartmentsAPI(nlp_class.parse("Show me all apartments that have a pool in Richmond, VA"))
+        api = ApartmentsAPI(nlp_class.parse("Show me all apartments that have a pool in Richmond, VA."))
+        print(api.nlp_response)
         amenity_code = api.map_amenities()
-        self.assertEqual(amenity_code, 512)
+        self.assertEqual(512, amenity_code)
 
     def testMultipleAmenitiesCode(self):
-        api = ApartmentsAPI.ApartmentsAPI(nlp_class.parse("Show me all apartments that have a pool and a dishwasher in Richmond, VA"))
+        api = ApartmentsAPI(nlp_class.parse("Show me all apartments that have a pool and a dishwasher in Richmond, VA."))
         amenity_code = api.map_amenities()
-        self.assertEqual(amenity_code, 512 + 4)
+        self.assertEqual(512 + 4, amenity_code)
 
 class TestMapRatings(unittest.TestCase):
 
     def testSingleRatingCode(self):
-        api = ApartmentsAPI.ApartmentsAPI(nlp_class.parse("Show me all 5 star apartments in Richmond, VA"))
+        api = ApartmentsAPI(nlp_class.parse("Show me all 5 star apartments in Richmond, VA."))
         rating_code = api.map_ratings()
-        self.assertEqual(rating_code, 16)
+        self.assertEqual(16, rating_code)
 
     def testSingleRatingCode(self):
-        api = ApartmentsAPI.ApartmentsAPI(nlp_class.parse("Show me all 4 star and 5 star apartments in Richmond, VA"))
+        api = ApartmentsAPI(nlp_class.parse("Show me all 4 star and 5 star apartments in Richmond, VA."))
         rating_code = api.map_ratings()
-        self.assertEqual(rating_code, 8 + 16)
+        self.assertEqual(8 + 16, rating_code)
 
 
 class TestStateExtraction(unittest.TestCase):
