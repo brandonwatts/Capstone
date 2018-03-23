@@ -14,6 +14,7 @@ us_state_abbreviations = StringStore().from_disk(Path("Api/StringStore/StateAbbr
 class NLP:
     def __init__(self):
         self.extractions = {}
+        self.matcher = self._createMatcher()
 
     def _add_extraction(self, name, value):
         if value:
@@ -21,9 +22,8 @@ class NLP:
         
     def parse(self, request):
         self.extractions.clear()
-        matcher = self._createMatcher()
         doc = nlp(request)
-        matcher(doc)
+        self.matcher(doc)
         self._define_extraction_points(doc)
         return self.extractions
 
@@ -35,7 +35,7 @@ class NLP:
         IS_MIN_QUANTITY = nlp.vocab.add_flag(Utils.is_min_quantity)
         IS_MAX_QUANTITY = nlp.vocab.add_flag(Utils.is_max_quantity)
         IS_BED = nlp.vocab.add_flag(Utils.is_bed)
-        
+
         star_rating_pattern     = [{'IS_DIGIT': True}, {'LEMMA': 'star'}]
         search_radius_pattern   = [{'IS_DIGIT': True}, {'ENT_TYPE': 'QUANTITY'}]
         min_sqft_pattern        = [{IS_MIN_QUANTITY: True}, {'LOWER': 'than', 'OP': '?'}, {'LIKE_NUM': True}, {IS_SQFT: True}]
