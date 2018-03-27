@@ -4,7 +4,7 @@ setup(
     name='Capstone',
     version='1.0',
     packages=['Api'],
-    install_requires=['flask-restplus','marshmallow','nltk','spacy', 'us'],
+    install_requires=['aiohttp', 'flask-restplus', 'marshmallow', 'nltk', 'spacy', 'us'],
     url='',
     license='MIT',
     author='',
