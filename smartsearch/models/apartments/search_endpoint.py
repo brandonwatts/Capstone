@@ -26,6 +26,7 @@ def _extract_ids(pins_state):
         while index < len(pins_state) and pins_state[index] != '~': index += 1
         index += 1
 
+
 def call(request):
     """ Calls the endpoint designated by _url
     

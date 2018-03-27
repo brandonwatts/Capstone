@@ -1,12 +1,14 @@
 from marshmallow import Schema, fields
 
+
 class ApartmentsSchema(Schema):
     """ This is the schema for the return value in the Apartments class."""
+
     class GeographyClass(Schema):
         class AddressClass(Schema):
             City = fields.String()
             State = fields.String()
-        
+
         GeographyType = fields.Int()
         Address = fields.Nested(AddressClass)
 

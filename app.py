@@ -15,6 +15,7 @@ parser.add_argument('request_type', type=str, choices=('Apartments', 'General'),
 
 nlp = NLP()
 
+
 @api.route('/nlp')
 class NlpEndpoints(Resource):
     @api.expect(parser, validate=True)
@@ -22,13 +23,14 @@ class NlpEndpoints(Resource):
         args = parser.parse_args()
         request = args['request']
         request_type = args['request_type']
-        
+
         nlp_results = nlp.parse(request)
-        
+
         if request_type == "General":
             return general.call(nlp_results)
         elif request_type == "Apartments":
             return apartments.call(nlp_results)
+
 
 if __name__ == '__main__':
     app.run()

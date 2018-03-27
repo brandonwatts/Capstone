@@ -1,9 +1,10 @@
 import re
+
 import spacy
-from spacy.strings import StringStore
-from spacy.matcher import Matcher
 import us
+
 from smartsearch.fieldmatcher import FieldMatcher
+
 
 class NLP:
     _nlp = spacy.load('en_core_web_lg')
