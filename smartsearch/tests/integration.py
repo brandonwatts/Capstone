@@ -1,29 +1,23 @@
 import unittest
-import app
+from app import app
+import json
 
-class TestEndpointRequestToNlpTransfer(unittest.TestCase):
 
-    # Need a way to test when an invalid text is passed to the nlp.  But maybe not if we assume happy path?
-    def testValidQuery(self):
-        request = "Show me all apartments in Richmond, Virginia"
-        nlp_result = app.nlp.parse(request)
+class TestRequestTypeGeneral(unittest.TestCase):
 
-class TestNlpToApartmentsResponseTransfer(unittest.TestCase):
+    def setUp(self):
+        self.app = app.test_client()
+        self.app.testing = True
 
     def testSimpleNlpResponse(self):
-        request = "Show me all apartments in Richmond, Virginia"
-        nlp_result = app.nlp.parse(request)
-        apartment_api = app.ApartmentsAPI(nlp_result)
-        self.assertEqual(nlp_result['city'], apartment_api.nlp_response['city'])
-        self.assertEqual(nlp_result['state'], apartment_api.nlp_response['state'])
+        result = self.app.get('http://localhost:5000/nlp?request=%22Show%20me%20all%20apartments%20in%20Richmond%2C%20Virginia%22&request_type=General')
+        data = json.loads(result.data)
+        self.assertEqual('Richmond', data.get('city'))
+        self.assertEqual('VA', data.get('state'))
 
-    def testComplexNlpResponse(self):
-        request = "Show me all the 3 bedroom apartments that have a pool and are cat friendly in Richmond, Virginia"
-        nlp_result = app.nlp.parse(request)
-        apartment_api = app.ApartmentsAPI(nlp_result)
-        self.assertEqual(nlp_result['city'], apartment_api.nlp_response['city'])
-        self.assertEqual(nlp_result['cat_friendly'], apartment_api.nlp_response['cat_friendly'])
-        self.assertEqual(nlp_result['has_pool'], apartment_api.nlp_response['has_pool'])
+    def tearDown(self):
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
