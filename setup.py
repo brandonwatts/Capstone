@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='Capstone',
     version='1.0',
-    packages=['Api'],
+    packages=['smartsearch'],
     install_requires=['aiohttp', 'flask-restplus', 'marshmallow', 'nltk', 'spacy', 'us'],
     url='',
     license='MIT',
