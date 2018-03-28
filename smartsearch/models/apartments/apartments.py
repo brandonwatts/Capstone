@@ -4,7 +4,6 @@ from smartsearch.models.apartments.apartments_schema import ApartmentsSchema
 
 _schema = ApartmentsSchema()
 
-
 def _mapattrs(attributes):
     """ Maps the result returned by nlp.py into the correct schema designated by CoStar """
     return {
@@ -25,9 +24,11 @@ def _mapattrs(attributes):
         }
     }
 
+def _get_data(dump):
+    return dump.data if hasattr(dump, 'data') else dump
 
 def call(attributes):
     """ Pulls data from the search endpoint and then the info endpoint """
-    apartments_api = _schema.dumps(_mapattrs(attributes))
-    apartment_ids, search_criteria = search_endpoint.call(apartments_api.data)
+    apartments_api = _get_data(_schema.dumps(_mapattrs(attributes)))
+    apartment_ids, search_criteria = search_endpoint.call(apartments_api)
     return info_endpoint.call(apartment_ids, search_criteria)

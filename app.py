@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restplus import Resource, Api, reqparse
 
-from smartsearch.nlp import NLP
+from smartsearch import nlp
 from smartsearch.models.apartments import apartments
 from smartsearch.models.general import general
 
@@ -13,9 +13,6 @@ parser = reqparse.RequestParser()
 parser.add_argument('request', type=str, required=True)
 parser.add_argument('request_type', type=str, choices=('Apartments', 'General'), required=True)
 
-nlp = NLP()
-
-
 @api.route('/nlp')
 class NlpEndpoints(Resource):
     @api.expect(parser, validate=True)
@@ -23,14 +20,13 @@ class NlpEndpoints(Resource):
         args = parser.parse_args()
         request = args['request']
         request_type = args['request_type']
-
-        nlp_results = nlp.parse(request)
-
+        
+        results = nlp.parse(request)
+        
         if request_type == "General":
-            return general.call(nlp_results)
+            return general.call(results)
         elif request_type == "Apartments":
-            return apartments.call(nlp_results)
-
+            return apartments.call(results)
 
 if __name__ == '__main__':
     app.run()

@@ -1,17 +1,16 @@
 from spacy.matcher import Matcher
 
-
 class FieldMatcher(Matcher):
     def __init__(self, vocab, extractions):
         super().__init__(vocab)
         
         def extract(index):
             def callback(matcher, doc, i, matches):
-                match_id, a, b = matches[i]
+                match_id, head, tail = matches[i]
                 if index > 0:
-                    extractions[doc.vocab.strings[match_id]] = doc[a + index]
+                    extractions[doc.vocab.strings[match_id]] = doc[head + index].text
                 else:
-                    extractions[doc.vocab.strings[match_id]] = doc[b + index]
+                    extractions[doc.vocab.strings[match_id]] = doc[tail + index].text
             return callback
         
         self.add("star_rating", extract(0), [{"IS_DIGIT": True}, {"LEMMA": "star"}])

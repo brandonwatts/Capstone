@@ -8,7 +8,7 @@ def register():
     return decorator
 
 def containsReferenceTo(doc, reference, threshold=0.65):
-    ref = nlp(reference)
+    ref = nlp.nlp(reference)
     for token in doc:
         if token.similarity(ref) > threshold:
             return True
@@ -60,4 +60,4 @@ def has_laundry_facilities(doc):
 
 def extract_references(doc, extractions):
     for field in referencers:
-        extractions[field] = references[field](doc)
+        extractions[field] = referencers[field](doc)
