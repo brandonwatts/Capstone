@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields
 
+
 class GeneralSchema(Schema):
     state = fields.Str()
     city = fields.Str()

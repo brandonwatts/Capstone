@@ -1,8 +1,8 @@
 import re
+
 import spacy
-from spacy.strings import StringStore
-from spacy.matcher import Matcher
 import us
+
 from smartsearch.fieldmatcher import FieldMatcher
 from smartsearch.referencer import extract_references
 
@@ -52,3 +52,4 @@ def extract_zip_code(doc):
 
 def extract_address(doc):
     return [token.text for token in doc if token.ent_type_ == "FAC"]
+

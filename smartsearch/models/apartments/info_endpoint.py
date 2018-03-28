@@ -11,6 +11,7 @@ import aiohttp
 _url = "https://www.apartments.com/services/property/infoCardData"
 _headers = {"Content-Type": "application/json"}
 
+
 async def _call_for_key(key, search_criteria):
     """ Calls the endpoint designated by self.urlf for an individual key.
     
@@ -18,12 +19,13 @@ async def _call_for_key(key, search_criteria):
     search_criteria -- Search Criteria for a given API call. It is the same for all the keys.
     
     """
-    
+
     call = {"ListingKeys": [str(key)], "SearchCriteria": search_criteria}
     data = json.dumps(call)
     async with aiohttp.ClientSession() as session:
         async with session.post(_url, data=data, headers=_headers) as resp:
             return await resp.text()
+
 
 def call(keys, search_criteria):
     """ Calls the endpoint designated by self.url

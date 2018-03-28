@@ -1,10 +1,9 @@
-import json
-
 from smartsearch.models.apartments import info_endpoint
 from smartsearch.models.apartments import search_endpoint
 from smartsearch.models.apartments.apartments_schema import ApartmentsSchema
 
 _schema = ApartmentsSchema()
+
 
 def _mapattrs(attributes):
     """ Maps the result returned by nlp.py into the correct schema designated by CoStar """
@@ -26,8 +25,9 @@ def _mapattrs(attributes):
         }
     }
 
+
 def call(attributes):
     """ Pulls data from the search endpoint and then the info endpoint """
     apartments_api = _schema.dumps(_mapattrs(attributes))
-    apartment_ids, search_criteria = search_endpoint.call(apartments_api)
+    apartment_ids, search_criteria = search_endpoint.call(apartments_api.data)
     return info_endpoint.call(apartment_ids, search_criteria)

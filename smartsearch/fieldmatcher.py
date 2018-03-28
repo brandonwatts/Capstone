@@ -1,5 +1,6 @@
 from spacy.matcher import Matcher
 
+
 class FieldMatcher(Matcher):
     def __init__(self, vocab, extractions):
         super().__init__(vocab)
