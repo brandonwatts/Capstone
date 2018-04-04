@@ -8,20 +8,20 @@ extractions = {}
 def member_of(values):
     return lambda value: value.lower() in values
 
-MAX_SQFT_HEADERS = ["at least", "above", "over", "greater than", "more than", "bigger than"]
-MIN_SQFT_HEADERS = ["at most", "below", "under", "cheaper than", "less than", "smaller than"]
+MIN_SQFT_HEADERS = ["at least", "above", "over", "greater than", "more than", "bigger than"]
+MAX_SQFT_HEADERS = ["at most", "below", "under", "cheaper than", "less than", "smaller than"]
 
 IS_MIN_SQFT_HEADER = nlp.vocab.add_flag(member_of(MIN_SQFT_HEADERS))
 IS_MAX_SQFT_HEADER = nlp.vocab.add_flag(member_of(MAX_SQFT_HEADERS))
 
-MAX_PRICE_HEADERS = ["at least", "above", "over", "greater than", "more than", "more expensive than"]
-MIN_PRICE_HEADERS = ["at most", "below", "under", "cheaper than", "less than", "less expensive than"]
+MIN_PRICE_HEADERS = ["at least", "above", "over", "greater than", "more than", "more expensive than"]
+MAX_PRICE_HEADERS = ["at most", "below", "under", "cheaper than", "less than", "less expensive than"]
 
 IS_MIN_PRICE_HEADER = nlp.vocab.add_flag(member_of(MIN_PRICE_HEADERS))
 IS_MAX_PRICE_HEADER = nlp.vocab.add_flag(member_of(MAX_PRICE_HEADERS))
 
-MAX_BED_HEADERS = ["at least", "above", "over", "more than"]
-MIN_BED_HEADERS = ["at most", "below", "under", "less than", "fewer than"]
+MIN_BED_HEADERS = ["at least", "above", "over", "more than"]
+MAX_BED_HEADERS = ["at most", "below", "under", "less than", "fewer than"]
 
 IS_MIN_BED_HEADER = nlp.vocab.add_flag(member_of(MIN_BED_HEADERS))
 IS_MAX_BED_HEADER = nlp.vocab.add_flag(member_of(MAX_BED_HEADERS))
