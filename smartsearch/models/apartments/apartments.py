@@ -7,7 +7,10 @@ from smartsearch.models.apartments.apartments_schema import ApartmentsSchema
 _schema = ApartmentsSchema()
 
 def rating(ratings):
-    return int(sum(2 ** int(rating - 1) for rating in ratings))
+    if ratings:
+        return int(sum(2 ** int(rating - 1) for rating in ratings))
+    else:
+        return 31
 
 def _mapattrs(attributes):
     """ Maps the result returned by nlp.py into the correct schema designated by CoStar """
