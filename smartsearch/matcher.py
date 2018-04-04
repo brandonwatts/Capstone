@@ -36,11 +36,20 @@ def extract_lefts(matcher, doc, i, matches):
         text = " ".join(token.text for token in doc[head].lefts) + " " + doc[head].text
         extractions[doc.vocab.strings[match_id][:-2]] = text
 
+def extract_append(index):
+    def callback(matcher, doc, i, matches):
+        match_id, head, tail = matches[i]
+        if extractions[doc.vocab.strings[match_id][:-2]]:
+            extractions[doc.vocab.strings[match_id][:-2]].append(doc[head:tail][index].text)
+        else:
+            extractions[doc.vocab.strings[match_id][:-2]] = [doc[head:tail][index].text]
+    return callback
+
 field_matcher = Matcher(nlp.vocab)
 
 # rating patterns
 
-field_matcher.add("star_rating", extract(0), [{"IS_DIGIT": True}, {"LEMMA": "star"}])
+field_matcher.add("star_rating", extract_append(0), [{"IS_DIGIT": True}, {"LEMMA": "star"}])
 
 # build year patterns
 

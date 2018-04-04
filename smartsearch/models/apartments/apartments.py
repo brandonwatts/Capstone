@@ -4,18 +4,21 @@ from smartsearch.models.apartments.apartments_schema import ApartmentsSchema
 
 _schema = ApartmentsSchema()
 
+def rating(ratings):
+    return int(sum(2 ** int(rating - 1) for rating in ratings))
+
 def _mapattrs(attributes):
     """ Maps the result returned by nlp.py into the correct schema designated by CoStar """
     return {
         'Geography': {
             'Address': {
                 'City': attributes.get('city'),
-                'State': attributes.get('state')
+                'State': us.states.lookup(attributes.get('state')).abbr
             },
             'GeographyType': 2
         },
         'Listing': {
-            'Ratings': 31,
+            'Ratings': rating(attributes.get("star_rating")),
             'MinRentAmount': attributes.get('min_price'),
             'MaxRentAmount': attributes.get('max_price'),
             'MinSqft': attributes.get('min_sqft'),
