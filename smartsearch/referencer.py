@@ -1,4 +1,4 @@
-from smartsearch import nlp
+from smartsearch.model import nlp
 
 referencers = {}
 
@@ -8,7 +8,7 @@ def register():
     return decorator
 
 def containsReferenceTo(doc, reference, threshold=0.65):
-    ref = nlp.nlp(reference)
+    ref = nlp(reference)
     for token in doc:
         if token.similarity(ref) > threshold:
             return True
