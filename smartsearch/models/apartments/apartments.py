@@ -1,3 +1,5 @@
+import us
+
 from smartsearch.models.apartments import info_endpoint
 from smartsearch.models.apartments import search_endpoint
 from smartsearch.models.apartments.apartments_schema import ApartmentsSchema
