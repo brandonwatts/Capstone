@@ -39,7 +39,7 @@ def extract_lefts(matcher, doc, i, matches):
 def extract_append(index):
     def callback(matcher, doc, i, matches):
         match_id, head, tail = matches[i]
-        if extractions[doc.vocab.strings[match_id][:-2]]:
+        if doc.vocab.strings[match_id][:-2] in extractions:
             extractions[doc.vocab.strings[match_id][:-2]].append(doc[head:tail][index].text)
         else:
             extractions[doc.vocab.strings[match_id][:-2]] = [doc[head:tail][index].text]
