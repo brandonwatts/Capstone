@@ -8,7 +8,7 @@ _schema = ApartmentsSchema()
 
 def rating(ratings):
     if ratings:
-        return int(sum(2 ** int(rating - 1) for rating in ratings))
+        return int(sum(2 ** (int(rating) - 1) for rating in ratings))
     else:
         return 31
 
