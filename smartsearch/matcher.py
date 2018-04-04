@@ -49,11 +49,11 @@ field_matcher = Matcher(nlp.vocab)
 
 # rating patterns
 
-field_matcher.add("star_rating", extract_append(0), [{"IS_DIGIT": True}, {"LEMMA": "star"}])
+field_matcher.add("star_rating 1", extract_append(0), [{"IS_DIGIT": True}, {"LEMMA": "star"}])
 
 # build year patterns
 
-field_matcher.add("build_year", extract(-1), [{'LOWER': 'built'}, {'LOWER': 'in'}, {'ENT_TYPE': 'DATE'}])
+field_matcher.add("build_year 1", extract(-1), [{'LOWER': 'built'}, {'LOWER': 'in'}, {'ENT_TYPE': 'DATE'}])
 
 # sqft patterns
 
