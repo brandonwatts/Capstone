@@ -3,8 +3,6 @@ import re
 import spacy
 import us
 
-from smartsearch.model import *
-
 from smartsearch.matcher import field_matcher
 from smartsearch.matcher import phrase_matcher
 from smartsearch.model import extractions
