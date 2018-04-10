@@ -1,7 +1,7 @@
 import spacy
 import us
 
-nlp = spacy.load('en_core_web_lg')
+nlp = spacy.load('en_core_web_sm')
 
 extractions = {}
 
