@@ -13,17 +13,27 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
-Start by running the setup.py file
+Start by running the setup.py file:
 
 ```
 python setup.py install
 ```
 
-From here all you will need is the engish model for spaCy
+From here all you will need is the engish model for spaCy:
 
 ```
-python -m spacy download en
+python -m spacy download en_core_web_sm
 ```
+
+### Starting the server
+
+To start the server run the following command:
+
+```
+python app.py
+```
+
+This will start a server on port 5000 that will listen for requests. Information on using the API can be found in the provided swagger documentation.
 
 ## Running the tests
 
@@ -33,7 +43,7 @@ To test that spaCy is up and running run the following command:
 python -m spacy validate
 ```
 
-To rul all the tests (integration and unit) run the following command:
+To run all the tests (integration and unit) run the following command:
 
 ```
 python run_tests.py
