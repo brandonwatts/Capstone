@@ -19,7 +19,7 @@ Start by running the setup.py file:
 python setup.py install
 ```
 
-From here all you will need is the engish model for spaCy:
+From here all you will need is the English model for spaCy:
 
 ```
 python -m spacy download en_core_web_sm
