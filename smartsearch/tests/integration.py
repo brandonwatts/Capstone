@@ -18,6 +18,34 @@ class TestRequestTypeGeneral(unittest.TestCase):
     def tearDown(self):
         pass
 
+""" - This is more of an integration test
+class TestMapAmenities(unittest.TestCase):
+
+    def testSingleAmenityCode(self):
+        api = apartments._mapattrs(parse("Show me all apartments that have a pool in Richmond, VA."))
+        amenity_code = api.get('Listing').get('Amenities')
+        self.assertEqual(512, amenity_code)
+
+    def testMultipleAmenitiesCode(self):
+        api = apartments._mapattrs(
+            parse("Show me all apartments that have a pool and a dishwasher in Richmond, VA."))
+        amenity_code = api.get('Listing').get('Amenities')
+        self.assertEqual(512 + 4, amenity_code)
+        
+class TestMapRatings(unittest.TestCase):
+
+    def testSingleRatingCode(self):
+        api = parse("Show me all 5 star apartments in Richmond, VA.")
+        rating_code = api.get('Listing').get('Ratings')
+        self.assertEqual(16, rating_code)
+
+    def testDoubleRatingCode(self):
+        api = parse("Show me all 4 star and 5 star apartments in Richmond, VA.")
+        rating_code = api.get('Listing').get('Ratings')
+        self.assertEqual(8 + 16, rating_code)
+        
+"""
+
 
 if __name__ == '__main__':
     unittest.main()
