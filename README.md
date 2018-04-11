@@ -5,7 +5,7 @@ marketing company, is in need of a speech recognition and natural language proce
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
@@ -33,13 +33,19 @@ To test that spaCy is up and running run the following command:
 python -m spacy validate
 ```
 
-## Deployment
+To test test all the tests (integration and unit) run the following command:
 
-Add additional notes about how to deploy this on a live system
+```
+python run_tests.py
+```
 
 ## Built With
 
-* [Python](https://www.python.org/)
+* [Python 3.6.3](https://www.python.org/downloads/)
+* [Flask](http://flask.pocoo.org/)
+* [Flask-RESTPlus](https://flask-restplus.readthedocs.io/en/stable/)
+* [spaCy](https://spacy.io/)
+* [marshmallow](https://marshmallow.readthedocs.io/en/latest/#)
 
 ## Authors
 
