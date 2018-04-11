@@ -33,7 +33,7 @@ To test that spaCy is up and running run the following command:
 python -m spacy validate
 ```
 
-To test test all the tests (integration and unit) run the following command:
+To rul all the tests (integration and unit) run the following command:
 
 ```
 python run_tests.py
