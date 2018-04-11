@@ -3,13 +3,15 @@ from setuptools import setup
 setup(
     name='smartsearch',
     version='1.0',
-    packages=['smartsearch'],
+    packages=[''],
     install_requires=[
         'Flask==0.12.2',
         'flask-restplus==0.10.1',
-        'marshmallow==2.14.0',
+        'marshmallow==2.15.0',
         'us==1.0.0',
-        'spacy==2.0.6'
+        'spacy==2.0.11',
+        'aiohttp==3.0.9',
+        'requests==2.18.4'
     ],
     package_dir={'': 'smartsearch'},
     url='https://github.com/joshsticks/Capstone',
