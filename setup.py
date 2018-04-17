@@ -3,7 +3,6 @@ from setuptools import setup
 setup(
     name='smartsearch',
     version='1.0',
-    packages=[''],
     install_requires=[
         'Flask==0.12.2',
         'flask-restplus==0.10.1',
@@ -13,7 +12,6 @@ setup(
         'aiohttp==3.0.9',
         'requests==2.18.4'
     ],
-    package_dir={'': 'smartsearch'},
     url='https://github.com/joshsticks/Capstone',
     license='MIT',
     author='Jonathan Cary, Austin Green, Brandon Watts',

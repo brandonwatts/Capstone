@@ -6,6 +6,10 @@ from smartsearch.referencer import extract_references
 
 
 def static_args(**kwargs):
+    """
+    NEEDS DOC
+    # TODO
+    """
     def decorate(func):
         for k in kwargs:
             setattr(func, k, kwargs[k])
@@ -14,12 +18,39 @@ def static_args(**kwargs):
     return decorate
 
 
-@static_args(squarefoot=re.compile(r"(?<!\w)(square|sq(\.)?)(\s)?(feet|foot|ft(\.)?)(?!\w)", re.I))
+def remove_commas(match):
+    match = match.group()
+    return re.sub(',', '', match)
+
+
+@static_args(squarefoot=re.compile(r"(?<!\w)(square|sq(\.)?)(\s)?(feet|foot|ft(\.)?)(?!\w)"),
+             numberRE=re.compile(r"\$?\d+,?\d+", re.I))
 def preprocess(text):
-    return preprocess.squarefoot.sub("squarefoot", text)
+    """This method is used to preprocess text before any nlp is done on it.
+
+    The method first turns any variation of squarefoot into "squarefoot" so we do not have to check for it later in
+    the pipeline. It also removes commas from the numbers as its easier piped into API as an integer.
+
+    Note:
+        This method is always called before nlp() is called.
+
+    Args:
+        text (str): This is the block of text that we wish to preprocess.
+
+    Returns:
+        (str): The text that has been preprocessed.
+
+    """
+    sqftSub = preprocess.squarefoot.sub("squarefoot", text)
+    numberSub = preprocess.numberRE.sub(remove_commas, sqftSub)
+    return numberSub
 
 
 def parse(text):
+    """
+        NEEDS DOC
+        # TODO
+    """
     extractions.clear()
     doc = nlp(preprocess(text))
 
@@ -37,7 +68,20 @@ def parse(text):
     
     return extractions
 
+
 def is_negated(doc):
+    """This method checks if the sentence has been negated indicating the user wants the opposite of what he/she asked.
+
+    Ex. "Show me all the apartments that are NOT dog friendly". This works by starting at the head of the sentence and
+    then navigating through the parse tree looking for a negated target word.
+
+    Args:
+        doc (doc): This is a spacy doc object.
+
+    Returns:
+        (bool): True if text contains a negation, False otherwise.
+
+    """
     token = doc[0]
     while token != token.head:
         token = token.head
@@ -59,7 +103,12 @@ def is_negated(doc):
     
     return False
 
+
 def negate(extractions):
+    """
+    NEEDS DOC
+    # TODO
+    """
     if extractions.get("max_price") and not extractions.get("min_price"):
         extractions["min_price"] = extractions["max_price"]
         extractions["max_price"] = None
@@ -85,3 +134,4 @@ def negate(extractions):
         extractions.get["dog_friendly"] = False
     if extractions.get("cat_friendly"):
         extractions.get["cat_friendly"] = False
+

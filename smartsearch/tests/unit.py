@@ -108,22 +108,17 @@ class TestMaxSqftExtraction(unittest.TestCase):
 
 class TestMinPriceExtraction(unittest.TestCase):
 
-    def test_min_price_1(self):
-        api = parse("Property in Richmond for 250,000$")
-        min_price = api.get("min_price")
-        self.assertEqual(min_price, '250000')
-
-    def test_min_price_2(self):
+    def testMoreThanPrice(self):
         api = parse("List houses in Richmond more than $500,000")
         min_price = api.get("min_price")
-        self.assertEqual(min_price, '500000')
+        self.assertEqual(min_price, "500000")
 
-    def test_min_price_3(self):
+    def testGreaterThanPrice(self):
         api = parse("List houses in Richmond that are greater than $500,000")
         min_price = api.get("min_price")
         self.assertEqual(min_price, '500000')
 
-    def test_min_price_4(self):
+    def testOverPrice(self):
         api = parse("List houses in Richmond that are over $500,000")
         min_price = api.get("min_price")
         self.assertEqual(min_price, '500000')
