@@ -53,7 +53,7 @@ field_matcher.add("star_rating 1", extract_append(0), [{"IS_DIGIT": True}, {"LEM
 
 # build year patterns
 
-field_matcher.add("build_year 1", extract(-1), [{'LOWER': 'built'}, {'LOWER': 'in'}, {'ENT_TYPE': 'DATE'}])
+field_matcher.add("build_year 1", extract(-1), [{'LOWER': 'built'}, {'LOWER': 'in'}, {'SHAPE': 'dddd'}])
 
 # sqft patterns
 
@@ -100,7 +100,7 @@ field_matcher.add("address 1", extract_lefts, [{IS_STREET_LABEL: True}])
 
 # zip patterns
 
-field_matcher.add("zip_code 1", extract(0), [{"IS_DIGIT": True, "LENGTH": 5}])
+field_matcher.add("zip_code 1", extract(0), [{'SHAPE': 'ddddd'}])
 
 # state patterns
 
