@@ -61,7 +61,7 @@ class TestRequestTypeApartments(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
-
+        
     def testCityAndStateResponse(self):
         result = self.app.get( # Show me all apartments in Richmond, Virginia
             'http://localhost:5000/nlp?request=Show%20me%20all%20apartments%20in%20Richmond%2C%20Virginia&request_type=Apartments')
@@ -127,6 +127,76 @@ class TestRequestTypeApartments(unittest.TestCase):
             self.assertEqual('VA', i['Listing']['Address']['State'])
             max_bed = int(re.compile("\d+").findall(i['RentFormat']['Beds'])[-1])
             self.assertGreaterEqual(max_bed, 2)
+
+    def extractAmenity(self, apartments_code):
+
+        amenity_codes = [
+            ['in_unit_washer_and_dryer', 2],
+            ['dishwasher', 4],
+            ['air_conditioning', 16],
+            ['furnished', 128],
+            ['fitness_center', 256],
+            ['pool', 512],
+            ['parking', 65536],
+            ['wheelchair_access', 131072],
+            ['elevator', 524228],
+            ['washer_and_dryer_hookups', 1048576],
+            ['laundry_facilities', 2097152],
+            ['utilities_included', 4194304],
+            ['lofts', 8388608]
+        ]
+
+        amenities = []
+
+        for i in reversed(amenity_codes):
+            if apartments_code >= i[-1]:
+                amenities.append(i[0])
+                apartments_code -= i[-1]
+
+        return amenities
+
+    def testCityStateAndHasPool(self):
+        result = self.app.get( # Show me all apartments in Richmond, Virginia that have a pool
+            'http://localhost:5000/nlp?request=Show%20me%20all%20apartments%20in%20Richmond%2C%20Virginia%20that%20have%20a%20pool&request_type=Apartments')
+        data = json.loads(result.data)
+        for i in data:
+            self.assertEqual('Richmond', i['Listing']['Address']['City'])
+            self.assertEqual('VA', i['Listing']['Address']['State'])
+            amenities = self.extractAmenity(i['Listing']['Amenities'])
+            self.assertTrue('pool' in amenities)
+
+    def testCityStateAndHasElevator(self):
+        result = self.app.get( # Show me all apartments in Richmond, Virginia that have an elevator
+            'http://localhost:5000/nlp?request=Show%20me%20all%20apartments%20in%20Richmond%2C%20Virginia%20that%20have%20an%20elevator&request_type=Apartments')
+        data = json.loads(result.data)
+        for i in data:
+            self.assertEqual('Richmond', i['Listing']['Address']['City'])
+            self.assertEqual('VA', i['Listing']['Address']['State'])
+            amenities = self.extractAmenity(i['Listing']['Amenities'])
+            self.assertTrue('elevator' in amenities)
+
+    '''
+        Dog Friendly                Not an amenity (PetFriendly: 1)
+        Cat Friendly                Not an amenity (PetFriendly: 2)
+    '''
+
+    def testCityStateandCatFriendly(self):
+        result = self.app.get(  # Show me all apartments in Richmond, Virginia that are cat friendly
+            'http://localhost:5000/nlp?request=Show%20me%20all%20apartments%20in%20Richmond%2C%20Virginia%20that%20are%20cat%20friendly&request_type=Apartments')
+        data = json.loads(result.data)
+        for i in data:
+            self.assertEqual('Richmond', i['Listing']['Address']['City'])
+            self.assertEqual('VA', i['Listing']['Address']['State'])
+            self.assertTrue(i['Listing']['PetFriendly'] >= 2)
+
+    def testCityStateandCatFriendly(self):
+        result = self.app.get(  # Show me all apartments in Richmond, Virginia that are dog friendly
+            'http://localhost:5000/nlp?request=Show%20me%20all%20apartments%20in%20Richmond%2C%20Virginia%20that%20are%20dog%20friendly&request_type=Apartments')
+        data = json.loads(result.data)
+        for i in data:
+            self.assertEqual('Richmond', i['Listing']['Address']['City'])
+            self.assertEqual('VA', i['Listing']['Address']['State'])
+            self.assertTrue(i['Listing']['PetFriendly'] == 0 or i['Listing']['PetFriendly'] == 3)
 
     '''
     def testCityStateAndMaxSqft(self):
