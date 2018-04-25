@@ -34,9 +34,10 @@ class TestCityExtraction(unittest.TestCase):
         api = parse("What rental property is in Charleston, SC.")
         self.assertEqual(api["city"], "Charleston")
 
-    def testSimilarCityAsState(self):
+    def testCityNotInCityList(self):
         api = parse("Show me all the 3 bedrooms in New York City, New York")
-        self.assertEqual(api["city"], "New York City")
+        with self.assertRaises(KeyError):
+            city = api["city"]
 
     def testSameCityAsState(self):
         api = parse("Show me all the 3 bedrooms in New York, New York")
