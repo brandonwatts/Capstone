@@ -182,7 +182,7 @@ class TestAddressExtraction(unittest.TestCase):
 class TestBuildYearExtraction(unittest.TestCase):
 
     def testBuiltSinceSpecificDate(self):
-        api = parse("Give me all buildings built since 1990")
+        api = parse("Give me all buildings built in 1990.")
         self.assertEqual(api['build_year'], '1990')
 
 
