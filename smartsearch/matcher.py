@@ -104,10 +104,10 @@ field_matcher.add("zip_code 1", extract(0), [{'SHAPE': 'ddddd'}])
 
 # state patterns
 
-field_matcher.add("state 1", extract(0), [{IS_CITY: False, IS_STATE: True}])
-field_matcher.add("state 2", extract(-1), [{IS_CITY: True}, {"LOWER": ",", "OP": "?"}, {IS_CITY: True, IS_STATE: True}])
+field_matcher.add("state 1", extract(0), [{IS_CITY: False, IS_STATE: True, "POS": "PROPN"}])
+field_matcher.add("state 2", extract(-1), [{IS_CITY: True}, {"LOWER": ",", "OP": "?"}, {IS_CITY: True, IS_STATE: True, "POS": "PROPN"}])
 
 # city patterns
 
-field_matcher.add("city 1", extract(0), [{IS_CITY: True, IS_STATE: False}])
-field_matcher.add("city 2", extract(0), [{IS_CITY: True, IS_STATE: True}, {"LOWER": ",", "OP": "?"}, {IS_STATE: True}])
+field_matcher.add("city 1", extract(0), [{IS_CITY: True, IS_STATE: False}, {"LOWER": "city", "OP": "?"}])
+field_matcher.add("city 2", extract(0), [{IS_CITY: True, IS_STATE: True},{"LOWER": "city", "OP": "?"}, {"LOWER": ",", "OP": "?"}, {IS_STATE: True}])

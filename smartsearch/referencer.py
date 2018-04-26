@@ -93,7 +93,5 @@ def furnished(doc):
 
 @register()
 def has_laundry_facilities(doc):
-    return contains_reference(doc, reference="laundry")
-
-
-
+    return (contains_reference(doc, reference="laundry") or contains_reference(doc, reference="washer") \
+           or contains_reference(doc, reference="dryer"))
