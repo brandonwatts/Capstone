@@ -1,6 +1,6 @@
 import re
 
-from smartsearch.matcher import field_matcher, phrase_matcher
+from smartsearch.matcher import field_matcher, phrase_matcher, zip_matcher
 from smartsearch.model import extractions, nlp
 from smartsearch.referencer import extract_references
 
@@ -60,8 +60,14 @@ def parse(text):
             span.merge()
         except IndexError:
             pass
-
-    field_matcher(doc)
+    
+    for span in [doc[head:tail] for (match_id, head, tail) in field_matcher(doc)]:
+        try:
+            span.merge()
+        except IndexError:
+            pass
+    
+    zip_matcher(doc)
     extract_references(doc, extractions)
 
     if is_negated(doc):

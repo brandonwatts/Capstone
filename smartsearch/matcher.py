@@ -19,6 +19,7 @@ def extract(index):
     def callback(matcher, doc, i, matches):
         match_id, head, tail = matches[i]
         extractions[doc.vocab.strings[match_id][:-2]] = doc[head:tail][index].text
+        print(doc[head:tail][index].text)
     return callback
 
 def extract_range(start, end):
@@ -98,10 +99,6 @@ field_matcher.add("min_bed 6", extract(-2), [{IS_MAX_BED_HEADER: False, IS_MIN_B
 
 field_matcher.add("address 1", extract_lefts, [{IS_STREET_LABEL: True}])
 
-# zip patterns
-
-field_matcher.add("zip_code 1", extract(0), [{'SHAPE': 'ddddd'}])
-
 # state patterns
 
 field_matcher.add("state 1", extract(0), [{IS_CITY: False, IS_STATE: True, "POS": "PROPN"}])
@@ -110,4 +107,10 @@ field_matcher.add("state 2", extract(-1), [{IS_CITY: True}, {"LOWER": ",", "OP":
 # city patterns
 
 field_matcher.add("city 1", extract(0), [{IS_CITY: True, IS_STATE: False}, {"LOWER": "city", "OP": "?"}])
-field_matcher.add("city 2", extract(0), [{IS_CITY: True, IS_STATE: True},{"LOWER": "city", "OP": "?"}, {"LOWER": ",", "OP": "?"}, {IS_STATE: True}])
+field_matcher.add("city 2", extract(0), [{IS_CITY: True, IS_STATE: True}, {"LOWER": "city", "OP": "?"}, {"LOWER": ",", "OP": "?"}, {IS_STATE: True}])
+
+# zip patterns
+
+zip_matcher = Matcher(nlp.vocab)
+
+zip_matcher.add("zip_code 1", extract(0), [{"DIGIT": True, "LENGTH": 5}])
