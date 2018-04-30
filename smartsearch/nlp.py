@@ -100,11 +100,20 @@ def is_negated(doc):
         return True
 
     # this could be improved using what's in references
-    topics = ["house", "apartment", "building", "anywhere", "place"]
+    topics = [
+        "home", "homes",
+        "house", "houses",
+        "apartment", "apartments",
+        "building", "buildings",
+        "place", "places",
+        "residence", "residences",
+        "anywhere",
+        "anyplace"]
 
     for i in token.children:
         if i.text.lower() in topics:
             grandchildren = [j.text.lower() for j in i.children]
+            print(grandchildren)
             if any(j in grandchildren for j in negations):
                 return True
 
@@ -119,21 +128,21 @@ def negate(extractions):
     if extractions.get("max_price") and not extractions.get("min_price"):
         extractions["min_price"] = extractions["max_price"]
         extractions["max_price"] = None
-    if extractions.get("min_price") and not extractions.get("max_price"):
+    elif extractions.get("min_price") and not extractions.get("max_price"):
         extractions["max_price"] = extractions["min_price"]
         extractions["min_price"] = None
 
     if extractions.get("max_sqft") and not extractions.get("min_sqft"):
         extractions["min_sqft"] = extractions["max_sqft"]
         extractions["max_sqft"] = None
-    if extractions.get("min_sqft") and not extractions.get("max_sqft"):
+    elif extractions.get("min_sqft") and not extractions.get("max_sqft"):
         extractions["max_sqft"] = extractions["min_sqft"]
         extractions["min_sqft"] = None
 
     if extractions.get("max_bed") and not extractions.get("min_bed"):
         extractions["min_bed"] = extractions["max_bed"]
         extractions["max_bed"] = None
-    if extractions.get("min_bed") and not extractions.get("max_bed"):
+    elif extractions.get("min_bed") and not extractions.get("max_bed"):
         extractions["max_bed"] = extractions["min_bed"]
         extractions["min_bed"] = None
 
