@@ -12,7 +12,6 @@ class GeneralSchema(Schema):
     max_price = fields.Str()
     min_bed = fields.Str()
     max_bed = fields.Str()
-    pricing_type = fields.Str()
     build_year = fields.Int()
     dog_friendly = fields.Bool()
     cat_friendly = fields.Bool()
@@ -26,5 +25,3 @@ class GeneralSchema(Schema):
     star_rating = fields.List(fields.Str())
     furnished = fields.Bool()
     has_laundry_facilities = fields.Bool()
-    property_type = fields.Str()
-    search_radius = fields.Str()

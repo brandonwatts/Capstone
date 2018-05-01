@@ -13,6 +13,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('request', type=str, required=True)
 parser.add_argument('request_type', type=str, choices=('Apartments', 'General'), required=True)
 
+
 @api.route('/nlp')
 class NlpEndpoints(Resource):
     @api.expect(parser, validate=True)
