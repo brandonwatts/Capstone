@@ -43,7 +43,7 @@ def preprocess(text):
     the pipeline. It also removes commas from the numbers as its easier piped into API as an integer.
 
     Note:
-        This method is always called before nlp() is called.
+        This method is always called before parse() is called.
 
     Args:
         text (str): This is the block of text that we wish to preprocess.
@@ -58,9 +58,14 @@ def preprocess(text):
 
 
 def parse(text):
-    """
-        NEEDS DOC
-        # TODO
+    """This method is what is called by the models.
+
+    Args:
+        text (str): This is a string of text that has been preprocessed.
+
+    Returns:
+        (dict): Dictionary of fields mapped to their respective values.
+
     """
     extractions.clear()
     doc = nlp(preprocess(text))
@@ -70,13 +75,13 @@ def parse(text):
             span.merge()
         except IndexError:
             pass
-    
+
     for span in [doc[head:tail] for (match_id, head, tail) in field_matcher(doc)]:
         try:
             span.merge()
         except IndexError:
             pass
-    
+
     zip_matcher(doc)
     extract_references(doc, extractions)
 
@@ -130,9 +135,14 @@ def is_negated(doc):
 
 
 def negate(extractions):
-    """
-    NEEDS DOC
-    # TODO
+    """This is a helper method to negate the fields if a negation is found.
+
+    Args:
+        extractions (dict): This is a dictionary object which contains all of the extracted fields.
+
+    Returns:
+        (bool): True if text contains a negation, False otherwise.
+
     """
     if extractions.get("max_price") and not extractions.get("min_price"):
         extractions["min_price"] = extractions["max_price"]

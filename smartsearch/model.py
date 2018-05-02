@@ -1,12 +1,15 @@
 import spacy
 import us
 
+
 nlp = spacy.load('en_core_web_sm')
 
 extractions = {}
 
+
 def member_of(values):
     return lambda value: value.lower() in values
+
 
 MIN_SQFT_HEADERS = ["at least", "above", "over", "greater than", "more than", "bigger than"]
 MAX_SQFT_HEADERS = ["at most", "below", "under", "cheaper than", "less than", "smaller than"]
@@ -28,7 +31,7 @@ IS_MAX_BED_HEADER = nlp.vocab.add_flag(member_of(MAX_BED_HEADERS))
 
 IS_NEGATION = nlp.vocab.add_flag(member_of(["no", "not"]))
 
-STREET_LABELS = [label.lower() for label in open("smartsearch/street_labels.txt","r").read().split(",")]
+STREET_LABELS = [label.lower() for label in open("smartsearch/street_labels.txt", "r").read().split(",")]
 
 IS_STREET_LABEL = nlp.vocab.add_flag(member_of(STREET_LABELS))
 
@@ -36,6 +39,7 @@ STATES = [state.name.lower() for state in us.states.STATES] + [state.abbr.lower(
 
 IS_STATE = nlp.vocab.add_flag(member_of(STATES))
 
-CITIES = [line.split(",")[0].strip().lower() for line in open("smartsearch/cities.txt","r").readlines()]
+CITIES = [line.split(",")[0].strip().lower() for line in open("smartsearch/cities.txt", "r").readlines()]
 
 IS_CITY = nlp.vocab.add_flag(member_of(CITIES))
+

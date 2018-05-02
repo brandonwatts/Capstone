@@ -5,12 +5,13 @@ from smartsearch.models.apartments import search_endpoint
 from smartsearch.models.apartments.apartments_schema import ApartmentsSchema
 
 _schema = ApartmentsSchema()
+ALL_RATINGS = 31
 
 def rating(ratings):
     if ratings:
         return int(sum(2 ** (int(rating) - 1) for rating in ratings))
     else:
-        return 31
+        return ALL_RATINGS
 
 def _mapattrs(attributes):
     """ Maps the result returned by nlp.py into the correct schema designated by CoStar """
