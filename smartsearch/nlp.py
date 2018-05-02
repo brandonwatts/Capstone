@@ -6,11 +6,12 @@ from smartsearch.referencer import extract_references
 
 
 def static_args(**kwargs):
-    """
-    NEEDS DOC
-    # TODO
-    """
+    """This decorator method is used to add static arguments to another method.
 
+    The reason we are doing this is because we are passing a regular expression as an argument. Since the regular
+    expression is being compiled the via the static args, it is not being compiled on every method call.
+
+    """
     def decorate(func):
         for k in kwargs:
             setattr(func, k, kwargs[k])
@@ -20,6 +21,15 @@ def static_args(**kwargs):
 
 
 def remove_commas(match):
+    """Helper method to remove commas from a match group
+
+    Args:
+        match (match): This is a regular expression match object.
+
+    Returns:
+        (str): The text with commas removed.
+
+    """
     match = match.group()
     return re.sub(',', '', match)
 
@@ -113,7 +123,6 @@ def is_negated(doc):
     for i in token.children:
         if i.text.lower() in topics:
             grandchildren = [j.text.lower() for j in i.children]
-            print(grandchildren)
             if any(j in grandchildren for j in negations):
                 return True
 

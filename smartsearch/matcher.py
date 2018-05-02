@@ -19,7 +19,6 @@ def extract(index):
     def callback(matcher, doc, i, matches):
         match_id, head, tail = matches[i]
         extractions[doc.vocab.strings[match_id][:-2]] = doc[head:tail][index].text
-        print(doc[head:tail][index].text)
     return callback
 
 def extract_range(start, end):
@@ -113,4 +112,4 @@ field_matcher.add("city 2", extract(0), [{IS_CITY: True, IS_STATE: True}, {"LOWE
 
 zip_matcher = Matcher(nlp.vocab)
 
-zip_matcher.add("zip_code 1", extract(0), [{"DIGIT": True, "LENGTH": 5}])
+zip_matcher.add("zip_code 1", extract(0), [{"IS_DIGIT": True, "LENGTH": 5}])
